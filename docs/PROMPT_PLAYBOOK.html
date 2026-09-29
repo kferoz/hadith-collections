@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt Playbook — Hadith App in Claude Code</title>
+<style>
+:root{
+  --ink:#131a2b; --ink2:#1c2540; --ivory:#fbf8f1; --paper:#fffefb;
+  --muted:#6b7285; --rule:#e2dccb; --brass:#a97b2e; --jade:#1c6a5e; --rust:#93361c;
+  --sans:'Avenir Next','Segoe UI',system-ui,-apple-system,sans-serif;
+  --serif:'Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --mono:'SF Mono',ui-monospace,Consolas,'Liberation Mono',monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ivory);color:var(--ink);font-family:var(--serif);line-height:1.6}
+.strip{height:8px;background:repeating-linear-gradient(135deg,var(--brass) 0 6px,var(--jade) 6px 12px)}
+
+header{background:var(--ink);color:#f3efe4;padding:26px 22px 22px}
+.hin{max-width:880px;margin:0 auto}
+header h1{font-family:var(--sans);font-size:21px;letter-spacing:.04em;margin:0 0 6px;font-weight:600}
+header p{margin:0;font-size:13.5px;color:#b9c0d4;max-width:640px}
+
+.setup{max-width:880px;margin:22px auto 0;padding:0 22px}
+.setup .box{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--brass);padding:15px 18px}
+.setup h2{font-family:var(--sans);font-size:12px;letter-spacing:.1em;text-transform:uppercase;margin:0 0 8px;color:var(--ink2)}
+.setup p{margin:0 0 10px;font-size:13.5px}
+
+main{max-width:880px;margin:0 auto;padding:0 22px 70px}
+
+.stage{margin-top:34px}
+.sh{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.num{font-family:var(--mono);font-size:11px;color:#fff;background:var(--jade);
+  padding:3px 8px;border-radius:2px;flex:0 0 auto;letter-spacing:.04em}
+.sh h2{font-family:var(--sans);font-size:18px;margin:0;letter-spacing:.01em}
+.lede{font-size:14px;color:#3a4055;margin:0 0 12px}
+
+.pbox{background:var(--paper);border:1px solid var(--rule);border-radius:4px;overflow:hidden;
+  box-shadow:0 4px 14px rgba(15,76,70,.07)}
+.pbar{display:flex;justify-content:space-between;align-items:center;gap:10px;
+  background:#f4efe2;border-bottom:1px solid var(--rule);padding:7px 10px 7px 14px}
+.plabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.copy{font-family:var(--sans);font-size:11.5px;font-weight:600;letter-spacing:.03em;
+  background:var(--ink);color:#f6f2e7;border:none;padding:7px 15px;border-radius:3px;cursor:pointer;
+  transition:background .15s,transform .05s}
+.copy:hover{background:var(--ink2)}
+.copy:active{transform:scale(.97)}
+.copy.done{background:var(--jade)}
+pre{margin:0;padding:15px 17px;font-family:var(--mono);font-size:12.5px;line-height:1.62;
+  white-space:pre-wrap;word-wrap:break-word;color:#1e2438;max-height:460px;overflow-y:auto}
+
+.chk{margin-top:11px;background:#eef3ee;border-left:3px solid var(--jade);padding:11px 14px;font-size:13px}
+.chk b{font-family:var(--sans);font-size:11px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--jade);display:block;margin-bottom:4px}
+.warn{background:#f9ece7;border-left-color:var(--rust)}
+.warn b{color:var(--rust)}
+
+.divider{display:flex;align-items:center;gap:12px;margin:46px 0 4px}
+.divider h2{font-family:var(--sans);font-size:13px;letter-spacing:.13em;text-transform:uppercase;
+  margin:0;color:var(--muted);white-space:nowrap}
+.divider .ln{flex:1;height:1px;background:var(--rule)}
+
+.decline{background:var(--paper);border:1px solid var(--rule);border-left:3px solid var(--rust);
+  padding:6px 18px 14px;margin-top:14px}
+.decline li{font-size:13.5px;margin:11px 0}
+.decline .q{font-family:var(--mono);font-size:12px;color:var(--rust);display:block;margin-bottom:3px}
+
+code.inl{font-family:var(--mono);font-size:12px;background:#efe9da;padding:1px 5px;border-radius:2px}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(80px);
+  background:var(--jade);color:#fff;font-family:var(--sans);font-size:13px;padding:11px 22px;
+  border-radius:4px;opacity:0;transition:all .22s ease;pointer-events:none;z-index:99;
+  box-shadow:0 6px 20px rgba(0,0,0,.2)}
+#toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+@media (max-width:600px){
+  pre{font-size:11.5px;padding:13px}
+  main,.setup{padding-left:14px;padding-right:14px}
+  header{padding:20px 14px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="strip"></div>
+
+<header><div class="hin">
+  <h1>Prompt Playbook — Hadith App in Claude Code</h1>
+  <p>Seven staged prompts. Each ends in a checkpoint, so a wrong turn surfaces before it spreads through the pipeline. Tap <b>Copy</b> and paste straight into the CLI.</p>
+</div></header>
+
+<div class="setup"><div class="box">
+  <h2>Before you start</h2>
+  <p>Put <code class="inl">CLAUDE.md</code> in your project folder first — Claude Code reads it automatically every session, and it carries the constraints and the seven known bugs. Without it you will rediscover them.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Terminal</span><button class="copy">Copy</button></div>
+    <pre>mkdir hadith-app &amp;&amp; cd hadith-app
+# drop CLAUDE.md into this folder, then:
+claude</pre>
+  </div>
+</div></div>
+
+<main>
+
+<div class="stage">
+  <div class="sh"><span class="num">STAGE 0</span><h2>Ground rules</h2></div>
+  <p class="lede">Establishes the constraints before any code exists.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Read CLAUDE.md before doing anything else. Confirm you understand the four non-negotiable rules and the seven known bugs, then tell me in one paragraph what this project is and what the single most dangerous failure mode is.
+
+Do not write any code yet.</pre>
+  </div>
+  <div class="chk"><b>Checkpoint</b>It should name <b>hadith invented from memory</b> as the top risk. If it doesn't, re-read CLAUDE.md together before continuing.</div>
+</div>
+
+<div class="stage">
+  <div class="sh"><span class="num">STAGE 1</span><h2>Acquire source data</h2></div>
+  <p class="lede">Three GitHub datasets. Everything downstream depends on these being complete.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Download the hadith source datasets. Do not write hadith text from memory at any point — everything comes from these files.
+
+1. AhmedBaset/hadith-json — the nine books with Arabic and English, from db/by_book/the_9_books/*.json
+2. ShathaTm/LK-Hadith-Corpus — authenticity grades, 335 CSVs across six books
+3. abdelrahmaan/Hadith-Data-Sets — Arabic, including the complete Musnad Ahmad (~26k rows, vs the ~1.4k fragment in source 1)
+
+Use codeload.github.com zip URLs rather than the GitHub API — the API rate-limits fast and will stall you.
+
+For each file report: total entries, English coverage %, Arabic coverage %, and number of chapters. Flag anything where a count is far off the published figure for that collection.</pre>
+  </div>
+  <div class="chk"><b>Checkpoint</b>Bukhārī ≈ 7,277 entries / 97 chapters. Musnad Aḥmad in source 1 is ~1,374 — that is a <b>5% fragment</b>, and Claude should flag it.</div>
+</div>
+
+<div class="stage">
+  <div class="sh"><span class="num">STAGE 2</span><h2>Build the filter pipeline</h2></div>
+  <p class="lede">Marfūʿ filter, deduplication, topic tagging. Three of the seven known bugs live here.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Write build.py: a pipeline that takes one collection JSON and produces deduplicated, topic-tagged, Prophet-attributed narrations.
+
+MARFU' FILTER. Keep only narrations of what the Prophet (peace be upon him) said, did, ordered, or approved. Drop Companion opinions and compiler commentary. Requirements: check narrator + ' ' + text, never text alone (Sahih Muslim stores narration content in the narrator field — filtering on text alone halves the yield). Strip Arabic diacritics [\u064B-\u0652\u0640\u0670] before matching Prophet-markers (Musnad Ahmad is fully voweled and returns zero otherwise).
+
+DEDUPLICATE. The same hadith recurs via different chains with slightly different wording, so exact matching catches almost nothing. Use fuzzy token overlap on content words with isnad boilerplate stripped: merge when jaccard >= 0.48 or (coverage >= 0.72 and jaccard >= 0.35). Record merged references in an "also" field — never delete them.
+
+TOPICS. Assign from a scheme of ~65 practical life topics across 8 groups (worship, family, character, sins, wealth/law, hereafter, daily life, prophets). Weight keyword density and use the compiler's own book title as a prior. Target 1.5-2.0 topics per hadith.
+
+Run it on Bukhari and Muslim and report the funnel: raw -> marfu' -> deduped, plus topic distribution.</pre>
+  </div>
+  <div class="chk warn"><b>Checkpoint</b>Bukhārī ≈ 4,364 unique, Muslim ≈ 3,794. Topic average 1.5–2.0. <b>If any single topic holds more than ~15% of a collection, the keywords are too loose</b> — say so and have it retune.</div>
+</div>
+
+<div class="stage">
+  <div class="sh"><span class="num">STAGE 3</span><h2>Attach grades</h2></div>
+  <p class="lede">The stage that makes authenticity filtering possible — and it self-validates.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Join authenticity grades from the LK corpus onto the filtered data.
+
+The two sources number hadith incompatibly, so join by wording similarity, not reference number. Normalise grades into: Sahih, Hasan, Hasan Sahih, Da'if, Mawdu', Ungraded.
+
+Report match rate and grade distribution per collection.
+
+This join self-validates: Bukhari and Muslim must come back ~100% sahih. If weak grades appear in those two, the matching is broken — stop and fix it before touching the other collections.</pre>
+  </div>
+  <div class="chk"><b>Checkpoint</b>Match rate &gt;98% everywhere. Bukhārī/Muslim ~100% ṣaḥīḥ. Ibn Mājah should surface ~21 fabricated (mawḍūʿ) narrations — those are exactly what the grading exists to catch.</div>
+</div>
+
+<div class="stage">
+  <div class="sh"><span class="num">STAGE 4</span><h2>Build the app</h2></div>
+  <p class="lede">Single self-contained HTML file, no build step.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Build a single self-contained HTML file. Data inlined as a JS const, no build step, no external requests, no localStorage (unsupported in this context).
+
+- Topic rail, grouped into the 8 thematic groups, with live counts
+- Collection dropdown
+- Grade filter: All / Sahih / +Hasan / Weak only
+- Full-text search across text, narrator, book, topics
+- Paginate at 25 — rendering 20k cards at once hangs the browser
+- Each card: narrator, hadith text, collection + book + number, colour-coded grade badge, topic tags (clickable), and a sunnah.com verify link built from a distinctive phrase
+
+Reference numbers differ from sunnah.com's (7,277 vs 7,563 for Bukhari — the two count combined narrations differently). Never label them as sunnah.com references; that is what the wording-based verify link is for.
+
+An intro panel must state plainly: topics are keyword-assigned and are a browsing aid not a scholarly classification; grades are one scholar's opinion and others differ; ungraded collections are unverified, not authentic.
+
+Serif for hadith body, sans for UI chrome. A user must never see a narration without its grade status visible.</pre>
+  </div>
+  <div class="chk"><b>Checkpoint</b>Open it. Switch to Ibn Mājah + "Weak only" — you should get several hundred. Switch to Bukhārī + "Weak only" — you should get <b>zero</b>.</div>
+</div>
+
+<div class="stage">
+  <div class="sh"><span class="num">STAGE 5</span><h2>Extend to the wider corpus</h2></div>
+  <p class="lede">OpenITI — everything beyond the Nine Books, in Arabic. Two more known bugs live here.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Extend beyond the Nine Books using OpenITI — 224 GitHub repos of classical Arabic texts, named by author death date in 25-year buckets (Tabarani d.360 -> 0375AH, Bayhaqi d.458 -> 0475AH, Ibn Abi Shayba d.235 -> 0250AH).
+
+Write openiti_hadith.py with --list, --extract, and --batch modes. Pure stdlib, no pip dependencies.
+
+Format notes: #META#Header#End# closes the header; "# N " opens hadith N; ~~ is a line-wrap marker; strip PageV01P052 and ms0002 milestones. Some editions use ### sections instead — support both dialects.
+
+TWO TRAPS. (1) Never pick an edition by file size — for al-Mu'jam al-Kabir the largest file parses to 4 hadith while a smaller one gives 21,586. Score candidates by parsed entry count. (2) Pin the author in work names — a bare "Musnad" fragment in 0250AH returns Musnad Ahmad mislabelled as Ibn Rahwayh. Transliterations are non-obvious: CabdRazzaqSancani, AbuYaclaMawsili, HakimNaysaburi (c = ayn).
+
+For topic tagging, strip the blessing formula "salla llahu alayhi wa-sallam" before tokenising — it appears in nearly every isnad and will otherwise inflate the prayer topic tenfold.
+
+Extract these 15: Abd ar-Razzaq, Tayalisi, Shafi'i, Ibn Abi Shayba, Sa'id b. Mansur, Bazzar (filed as BahrZakhkhar), Abu Ya'la, Ibn Khuzayma, Tabarani x3, Daraqutni, Hakim, Bayhaqi x2. Mark every output UNGRADED.</pre>
+  </div>
+  <div class="chk warn"><b>Checkpoint</b>~92,855 unique. Ṭabarānī Kabīr ≈ 17,150, Bayhaqī Sunan Kubrā ≈ 14,832. <b>Any collection returning an implausible count is a bug, not a finding</b> — al-Bazzār coming back as 142 when ~9,000 was expected is how the author-pinning bug surfaced.</div>
+</div>
+
+<div class="stage">
+  <div class="sh"><span class="num">STAGE 6</span><h2>Merge tiers</h2></div>
+  <p class="lede">Keep verified and unverified material visibly separate.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Add the Arabic collections to the app as a separate tier. They must never blend into the same undifferentiated list as the English graded material — one is verified and readable, the other is neither.
+
+Add a tier switch (English graded / Arabic ungraded / both), RTL rendering for Arabic cards, and a persistent visual marker on every ungraded card.
+
+Keep the grade filter meaningful: selecting "Sahih only" must exclude all ungraded material rather than silently treating it as sound.</pre>
+  </div>
+</div>
+
+<div class="divider"><h2>Reusable prompts</h2><span class="ln"></span></div>
+
+<div class="stage" style="margin-top:16px">
+  <div class="sh"><h2 style="font-size:16px">Grading the Arabic tier</h2></div>
+  <p class="lede">Run outside a restricted network — Dorar is blocked in sandboxes.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Write a script that attaches Dorar.net grades to my ungraded Arabic CSVs by text matching, capturing the grade AND the scholar who gave it. Cache results, back off on HTTP 429, and rate-limit to 1 req/sec — Dorar is a free scholarly service. Support resuming via --start/--limit.</pre>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="sh"><h2 style="font-size:16px">When a count looks wrong</h2></div>
+  <p class="lede">The single most useful prompt in this file. Most findings came from noticing an odd number.</p>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Collection X returned N narrations but the published figure is ~M. Do not proceed. Diagnose whether this is a parsing failure, an edition problem, a wrong-author match, or a genuine property of the filter, and show me the evidence before changing anything.</pre>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="sh"><h2 style="font-size:16px">Adding or widening topics</h2></div>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Topic "X" has only N narrations, which suggests the keywords are too narrow rather than the material being absent. Show me the current pattern, propose a wider one, and report the before/after counts.</pre>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="sh"><h2 style="font-size:16px">Before shipping</h2></div>
+  <div class="pbox">
+    <div class="pbar"><span class="plabel">Prompt</span><button class="copy">Copy</button></div>
+    <pre>Audit the app against CLAUDE.md. For each of the four non-negotiable rules and seven known bugs, show me the specific code that enforces or avoids it. List anything unenforced.</pre>
+  </div>
+</div>
+
+<div class="divider"><h2>Push back on these</h2><span class="ln"></span></div>
+
+<div class="decline"><ul>
+  <li><span class="q">"I'll add well-known hadith from memory to fill this topic."</span>
+      <b>No.</b> This is the failure mode the whole project is built to avoid — recalled hadith produce invented reference numbers and garbled wording that look authoritative.</li>
+  <li><span class="q">"Tighter deduplication gets closer to the scholarly ~2,600 figure."</span>
+      Over-merging deletes distinct narrations. A visible near-duplicate is the cheaper error.</li>
+  <li><span class="q">"I'll mark ungraded collections as authentic since they're respected."</span>
+      Ungraded means unverified. Ṭabarānī and Bayhaqī contain weak material by design.</li>
+  <li><span class="q">"The reference numbers match sunnah.com."</span>
+      They don't, and spot-checking two or three that happen to align is not verification.</li>
+</ul></div>
+
+</main>
+
+<div id="toast">Copied to clipboard</div>
+
+<script>
+const toast = document.getElementById('toast');
+let toastTimer;
+function flash(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>toast.classList.remove('show'), 1600);
+}
+
+function copyText(text, btn){
+  const done = ()=>{
+    const old = btn.textContent;
+    btn.textContent = 'Copied';
+    btn.classList.add('done');
+    setTimeout(()=>{ btn.textContent = old; btn.classList.remove('done'); }, 1600);
+    flash('Copied to clipboard');
+  };
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text).then(done).catch(()=>fallback(text, done));
+  } else {
+    fallback(text, done);
+  }
+}
+
+// execCommand fallback for non-secure contexts / older browsers
+function fallback(text, done){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); }
+  catch(e){ flash('Press Ctrl+C / Cmd+C to copy'); }
+  document.body.removeChild(ta);
+}
+
+document.querySelectorAll('.copy').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const pre = btn.closest('.pbox').querySelector('pre');
+    copyText(pre.textContent, btn);
+  });
+});
+</script>
+</body>
+</html>

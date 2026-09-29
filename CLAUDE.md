@@ -168,14 +168,40 @@ numbering-independent.
 
 ## App conventions
 
-Single self-contained HTML file, data inlined as a JS const, no build step, no
-external requests, no localStorage. Topic rail grouped into 8 thematic groups;
-collection dropdown; grade filter (All / Ṣaḥīḥ / +Ḥasan / Weak only). Paginate
-at 25 — rendering 20k cards at once will hang the browser.
+`app/index.html` is a ~24 KB shell that **fetches `app/hadith.json` at runtime**.
+It is deliberately not one self-contained file: inlining 13.7 MB of data made the
+browser parse the whole payload before painting anything. Regenerate the data with
+`python3 scripts/build_app_data.py`, which rebuilds it from `data/english-graded/`
+so the app can never drift from the committed sources, and which re-runs the
+Bukhārī/Muslim grade self-check on every build.
 
-Serif for hadith body text, sans for UI chrome. Grade badges are colour-coded
-and always visible; a user must never see a narration without knowing its grade
-status.
+Because browsers refuse `fetch()` over `file://`, opening `app/index.html` straight
+from disk shows a load error that explains the fix. Serve the repo
+(`python3 -m http.server 8000`, then `/app/`), or build the single-file version
+with `--standalone` — that one is gitignored, since it duplicates data already
+committed.
+
+No localStorage. The only external request is the Google Fonts stylesheet for
+Literata and Outfit; both have full fallback stacks, so the page degrades cleanly
+offline.
+
+Topic rail grouped into 8 thematic groups; collection dropdown; grade filter
+(All / Ṣaḥīḥ / +Ḥasan / Weak only). Paginate at 25 — rendering 20k cards at once
+will hang the browser.
+
+**Readability is a requirement, not a preference.** The audience spans all ages.
+Hadith body text sits at 19px in Literata (a face designed for long-form reading)
+at 1.78 line-height on a ~68-character measure, and a text-size control scales the
+whole page from 0.92× to 1.42× through the `--fs` token — so every font-size is
+written `calc(Npx * var(--fs))`. Tap targets are ≥42px. Do not shrink this scale.
+
+Gradients (lapis → jade, with gold leaf) carry the visual identity: header bar,
+section rules, the selected topic, and each card's left edge, where the gradient
+also **encodes the grade** — jade for ṣaḥīḥ, gold for ḥasan or weak, grey for
+ungraded. **No gradient ever sits behind body text**; reading surfaces stay solid
+paper, or legibility is lost. Serif for hadith text, sans for UI chrome. Grade
+badges are colour-coded and always visible; a user must never see a narration
+without knowing its grade status.
 
 ---
 

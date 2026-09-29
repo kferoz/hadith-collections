@@ -87,17 +87,37 @@ Fifteen collections beyond the Nine Books, extracted from
 ## Layout
 
 ```
-app/hadith_library.html     Browsable app — topic rail, grade filter, search
-data/english-graded/        Tier 1, CSV + JSON
-data/arabic-ungraded/       Tier 2a, CSV + JSON
-data/openiti/               Tier 2b, CSV
-scripts/openiti_hadith.py   Extract any OpenITI collection (pure stdlib)
-scripts/dorar_fetch.py      Attach Dorar.net grades (run off a restricted network)
-docs/DATA_SOURCES_GUIDE.md  Where the data comes from and how to get more
-docs/PROMPT_PLAYBOOK.md     Staged prompts for rebuilding this in Claude Code
-CLAUDE.md                   Project memory — constraints, methods, known bugs
-COLLECTION_STATUS.csv       Every collection, built or unavailable, with reasons
+app/index.html                Browsable app — topic rail, grade filter, search
+app/hadith.json               Its data, built from data/english-graded/
+data/english-graded/          Tier 1, CSV + JSON
+data/arabic-ungraded/         Tier 2a, CSV + JSON
+data/openiti/                 Tier 2b, CSV
+scripts/build_app_data.py     Rebuild app/hadith.json from the committed data
+scripts/openiti_hadith.py     Extract any OpenITI collection (pure stdlib)
+scripts/dorar_fetch.py        Attach Dorar.net grades (run off a restricted network)
+docs/DATA_SOURCES_GUIDE.md    Where the data comes from and how to get more
+docs/PROMPT_PLAYBOOK.md       Staged prompts for rebuilding this in Claude Code
+CLAUDE.md                     Project memory — constraints, methods, known bugs
+COLLECTION_STATUS.csv         Every collection, built or unavailable, with reasons
 ```
+
+### Running the app
+
+Browsers block data files loaded from `file://`, so serve the folder rather than
+double-clicking the HTML:
+
+```bash
+python3 -m http.server 8000     # then open http://localhost:8000/app/
+```
+
+For a single file that opens with no server:
+
+```bash
+python3 scripts/build_app_data.py --standalone   # writes app/hadith_library_standalone.html
+```
+
+The app reads 20,603 narrations, filterable by topic, collection and grade, with a
+text-size control for comfortable reading at any age.
 
 CSV columns: `collection, ref_no, grade, book_chapter, narrator, hadith_text,
 topics, also_narrated_at, verify_phrase` (Tier 1) and `collection, seq_no,

@@ -1,0 +1,429 @@
+<title>Hadith Library</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Outfit:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: gradient filter bar over a two-column reading view — topic rail left,
+   narration cards right, one column on a phone. Gradients come from manuscript
+   illumination (lapis blue, gold leaf, jade) and stay on the chrome; every
+   reading surface is solid paper so the text keeps full contrast.
+   Type is set large by default and the reader can raise it further. */
+:root{
+  --fs:1;                      /* reader-controlled type multiplier */
+  --paper:#fffdf8; --ground:#f6f1e6; --ink:#161d2e; --ink-2:#333c56;
+  --muted:#6a7287; --rule:#e3dcc9;
+  --lapis:#1e3170; --jade:#146055; --brass:#a97b2e; --gold:#d9a94a;
+  --g-bar:linear-gradient(105deg,#141b2e 0%,#1b2f63 46%,#13564c 100%);
+  --g-accent:linear-gradient(180deg,var(--gold),var(--brass));
+  --g-jade:linear-gradient(180deg,#1f7a68,#12544a);
+  --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(30,49,112,.07),transparent 62%),
+           radial-gradient(900px 380px at 92% 4%,rgba(169,123,46,.09),transparent 60%);
+  --bar-fg:#f5f1e6; --bar-sub:#a6afc6; --bar-in:rgba(255,255,255,.10);
+  --bar-edge:rgba(255,255,255,.22);
+  --chip:#efe9da; --chip-fg:#454d63; --rail-hi:#efe9db;
+  --gs-bg:#e0efe7; --gs-fg:#0e5539;
+  --gh-bg:#efefd9; --gh-fg:#4e5615;
+  --gd-bg:#f8e4de; --gd-fg:#8a3116;
+  --gm-bg:#4d1512; --gm-fg:#ffdcd4;
+  --gu-bg:#eae9e3; --gu-fg:#585e6b;
+  --shadow:0 3px 16px rgba(22,29,46,.08);
+  --serif:'Literata','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --sans:'Outfit','Avenir Next','Segoe UI',system-ui,-apple-system,sans-serif;
+  --mono:'SF Mono',ui-monospace,Consolas,'Liberation Mono',monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1a2030; --ground:#11151f; --ink:#eee9dc; --ink-2:#c6cddd;
+  --muted:#939bb0; --rule:#2f3748;
+  --lapis:#7f9bea; --jade:#4fb69e; --brass:#dcb063; --gold:#f0cc7e;
+  --g-bar:linear-gradient(105deg,#080b13 0%,#121e45 48%,#0b3b34 100%);
+  --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(83,116,224,.11),transparent 62%),
+           radial-gradient(900px 380px at 92% 4%,rgba(220,176,99,.09),transparent 60%);
+  --bar-fg:#eee9dc; --bar-sub:#98a1b8; --bar-in:rgba(255,255,255,.08);
+  --bar-edge:rgba(255,255,255,.18);
+  --chip:#272e3e; --chip-fg:#bfc6d6; --rail-hi:#232a3a;
+  --gs-bg:#10362a; --gs-fg:#7fd9b5;
+  --gh-bg:#2e3319; --gh-fg:#d3da7c;
+  --gd-bg:#3d1b13; --gd-fg:#f4ab91;
+  --gm-bg:#5f1b16; --gm-fg:#ffd3c8;
+  --gu-bg:#282d3a; --gu-fg:#a6acba;
+  --shadow:0 3px 16px rgba(0,0,0,.4);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#1a2030; --ground:#11151f; --ink:#eee9dc; --ink-2:#c6cddd;
+  --muted:#939bb0; --rule:#2f3748;
+  --lapis:#7f9bea; --jade:#4fb69e; --brass:#dcb063; --gold:#f0cc7e;
+  --g-bar:linear-gradient(105deg,#080b13 0%,#121e45 48%,#0b3b34 100%);
+  --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(83,116,224,.11),transparent 62%),
+           radial-gradient(900px 380px at 92% 4%,rgba(220,176,99,.09),transparent 60%);
+  --bar-fg:#eee9dc; --bar-sub:#98a1b8; --bar-in:rgba(255,255,255,.08);
+  --bar-edge:rgba(255,255,255,.18);
+  --chip:#272e3e; --chip-fg:#bfc6d6; --rail-hi:#232a3a;
+  --gs-bg:#10362a; --gs-fg:#7fd9b5;
+  --gh-bg:#2e3319; --gh-fg:#d3da7c;
+  --gd-bg:#3d1b13; --gd-fg:#f4ab91;
+  --gm-bg:#5f1b16; --gm-fg:#ffd3c8;
+  --gu-bg:#282d3a; --gu-fg:#a6acba;
+  --shadow:0 3px 16px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--g-page),var(--ground);background-attachment:fixed;
+  color:var(--ink);font-family:var(--serif);line-height:1.7}
+button,select,input{font-family:inherit}
+
+.star{position:relative;width:12px;height:12px;flex:0 0 auto}
+.star::before,.star::after{content:'';position:absolute;inset:0;background:var(--g-accent)}
+.star::after{transform:rotate(45deg)}
+
+/* ---------- gradient filter bar ---------- */
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--g-bar);
+  color:var(--bar-fg);box-shadow:0 2px 18px rgba(0,0,0,.2)}
+.bar::after{content:'';display:block;height:4px;background:var(--g-accent)}
+.bar .row{max-width:1420px;margin:0 auto;padding:13px 22px;
+  display:flex;gap:13px;align-items:center;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}
+.brand h1{font-family:var(--sans);font-size:calc(19px*var(--fs));letter-spacing:.11em;
+  text-transform:uppercase;margin:0;font-weight:600;line-height:1.2}
+.brand .sub{font-family:var(--sans);font-size:calc(11.5px*var(--fs));color:var(--bar-sub);
+  letter-spacing:.14em;margin-top:3px;font-weight:500}
+#q{flex:1 1 230px;min-width:140px;max-width:400px;background:var(--bar-in);
+  border:1.5px solid var(--bar-edge);color:var(--bar-fg);padding:11px 15px;border-radius:9px;
+  font-family:var(--sans);font-size:calc(15px*var(--fs));outline:none}
+#q:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,169,74,.32)}
+#q::placeholder{color:var(--bar-sub)}
+#col{background:var(--bar-in);border:1.5px solid var(--bar-edge);color:var(--bar-fg);
+  font-family:var(--sans);font-size:calc(14.5px*var(--fs));padding:11px 11px;border-radius:9px;
+  flex:0 0 auto;max-width:250px;font-weight:500}
+#col option{background:#141b2e;color:#f5f1e6}
+.seg{display:flex;flex:0 0 auto;border:1.5px solid var(--bar-edge);border-radius:9px;overflow:hidden}
+.seg button{background:var(--bar-in);border:none;color:var(--bar-fg);font-family:var(--sans);
+  font-size:calc(14px*var(--fs));padding:11px 15px;cursor:pointer;font-weight:500;min-height:44px}
+.seg button+button{border-left:1.5px solid var(--bar-edge)}
+.seg button[aria-pressed="true"]{background:var(--g-accent);color:#1d1403;font-weight:700}
+.size{display:flex;gap:4px;align-items:center;flex:0 0 auto}
+.size span{font-family:var(--sans);font-size:calc(12px*var(--fs));color:var(--bar-sub);
+  letter-spacing:.06em;margin-right:2px}
+.size button{width:40px;height:40px;border-radius:9px;border:1.5px solid var(--bar-edge);
+  background:var(--bar-in);color:var(--bar-fg);font-family:var(--sans);cursor:pointer;font-weight:600}
+.size button:nth-of-type(1){font-size:13px}
+.size button:nth-of-type(2){font-size:18px}
+.tally{font-family:var(--sans);font-size:calc(13.5px*var(--fs));color:var(--bar-sub);
+  white-space:nowrap;font-weight:500}
+.railbtn{display:none;background:var(--bar-in);border:1.5px solid var(--bar-edge);color:var(--bar-fg);
+  font-family:var(--sans);font-size:calc(14.5px*var(--fs));padding:11px 14px;border-radius:9px;
+  cursor:pointer;min-height:44px;font-weight:500}
+
+/* ---------- shell ---------- */
+.wrap{max-width:1420px;margin:0 auto;display:flex;align-items:flex-start}
+
+.rail{flex:0 0 290px;min-width:0;position:sticky;
+  top:calc(env(safe-area-inset-top,0px) + 76px);
+  max-height:calc(100vh - 76px);overflow-y:auto;padding:22px 16px 48px}
+.rail h2{font-family:var(--sans);font-size:calc(12px*var(--fs));letter-spacing:.14em;
+  text-transform:uppercase;color:var(--muted);margin:22px 0 8px;font-weight:600}
+.rail h2:first-of-type{margin-top:20px}
+.trow{display:flex;justify-content:space-between;align-items:baseline;gap:9px;width:100%;
+  background:none;border:none;text-align:left;padding:9px 11px;cursor:pointer;border-radius:8px;
+  font-family:var(--sans);font-size:calc(15px*var(--fs));color:var(--ink-2);line-height:1.35;
+  min-height:42px;font-weight:450}
+.trow:hover{background:var(--rail-hi)}
+.trow .c{font-family:var(--sans);font-size:calc(12.5px*var(--fs));color:var(--muted);
+  font-variant-numeric:tabular-nums;font-weight:500}
+.trow[aria-pressed="true"]{background:var(--g-jade);color:#fff;font-weight:600}
+.trow[aria-pressed="true"] .c{color:var(--gold)}
+
+main{flex:1 1 auto;min-width:0;padding:24px 22px 76px}
+
+.note{border:1px solid var(--rule);border-radius:14px;background:var(--paper);
+  padding:20px 22px;margin-bottom:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.note::before{content:'';position:absolute;inset:0 0 auto 0;height:5px;background:var(--g-bar)}
+.note .hd{display:flex;align-items:center;gap:10px;margin:4px 0 11px}
+.note .hd strong{font-family:var(--sans);font-size:calc(14px*var(--fs));letter-spacing:.11em;
+  text-transform:uppercase;font-weight:600}
+.note p{margin:0 0 11px;font-size:calc(17px*var(--fs));line-height:1.72;color:var(--ink-2)}
+.note p:last-child{margin-bottom:0}
+.note b{color:var(--jade);font-weight:600}
+.note summary{font-family:var(--sans);font-size:calc(15px*var(--fs));color:var(--brass);
+  cursor:pointer;font-weight:600;padding:6px 0;min-height:34px}
+
+.crumb{display:flex;align-items:center;gap:12px;margin:0 0 18px}
+.crumb h2{font-family:var(--sans);font-size:calc(25px*var(--fs));margin:0;font-weight:600;
+  letter-spacing:-.01em;text-wrap:balance}
+.crumb .ln{flex:1;height:2px;background:var(--g-accent);opacity:.5;border-radius:2px}
+
+.card{background:var(--paper);border:1px solid var(--rule);border-radius:14px;
+  padding:20px 22px 18px;margin-bottom:14px;box-shadow:var(--shadow);
+  position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0 auto 0 0;width:5px;background:var(--g-jade)}
+.card.w::before{background:var(--g-accent)}
+.card.u::before{background:linear-gradient(180deg,#9aa1b2,#6a7287)}
+.nar{font-family:var(--sans);font-size:calc(14px*var(--fs));letter-spacing:.05em;
+  text-transform:uppercase;color:var(--jade);margin-bottom:9px;font-weight:600}
+.body{font-size:calc(19px*var(--fs));line-height:1.78;color:var(--ink);max-width:68ch}
+.foot{display:flex;flex-wrap:wrap;gap:9px;align-items:center;
+  margin-top:16px;padding-top:14px;border-top:1px solid var(--rule)}
+.stamp{font-family:var(--sans);font-size:calc(13px*var(--fs));color:var(--ink-2);
+  border:1px solid var(--rule);padding:5px 11px;border-radius:7px;font-weight:500}
+.gr{font-family:var(--sans);font-size:calc(13px*var(--fs));padding:5px 12px;border-radius:7px;
+  white-space:nowrap;font-weight:600}
+.gr.s{background:var(--gs-bg);color:var(--gs-fg)}
+.gr.h{background:var(--gh-bg);color:var(--gh-fg)}
+.gr.d{background:var(--gd-bg);color:var(--gd-fg)}
+.gr.m{background:var(--gm-bg);color:var(--gm-fg)}
+.gr.u{background:var(--gu-bg);color:var(--gu-fg)}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tg{font-family:var(--sans);font-size:calc(13px*var(--fs));background:var(--chip);
+  color:var(--chip-fg);padding:5px 12px;border:none;cursor:pointer;border-radius:7px;
+  font-weight:500;min-height:32px}
+.tg:hover{background:var(--g-accent);color:#1d1403;font-weight:600}
+.dup{font-family:var(--sans);font-size:calc(12.5px*var(--fs));color:var(--muted)}
+.vf{font-family:var(--sans);font-size:calc(13px*var(--fs));color:var(--brass);
+  text-decoration:none;font-weight:600;margin-left:auto;border-bottom:1.5px solid}
+
+.more{display:block;width:100%;margin-top:24px;padding:17px;background:var(--g-bar);
+  color:var(--bar-fg);border:none;border-radius:12px;font-family:var(--sans);
+  font-size:calc(15px*var(--fs));letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
+  font-weight:600;min-height:52px}
+.more:hover{filter:brightness(1.18)}
+.none,.load{padding:70px 12px;text-align:center;color:var(--muted);
+  font-family:var(--sans);font-size:calc(16px*var(--fs))}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+@media (max-width:920px){
+  .rail{position:fixed;top:calc(env(safe-area-inset-top,0px) + 76px);left:0;bottom:0;width:296px;
+    background:var(--g-page),var(--ground);z-index:35;transform:translateX(-102%);
+    transition:transform .2s ease;box-shadow:8px 0 26px rgba(0,0,0,.24);
+    border-right:1px solid var(--rule)}
+  .rail[data-open="1"]{transform:translateX(0)}
+  .railbtn{display:block}
+  .brand .sub{display:none}
+  main{padding:18px 16px 64px}
+  .card{padding:17px 17px 15px}
+  .size{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bar"><div class="row">
+  <button class="railbtn" id="railbtn" aria-label="Show topics">☰ Topics</button>
+  <div class="brand">
+    <span class="star"></span>
+    <div>
+      <h1>Hadith Library</h1>
+      <div class="sub">8 COLLECTIONS · GRADED · BY TOPIC</div>
+    </div>
+  </div>
+  <input id="q" type="search" placeholder="Search narrations…" aria-label="Search narrations">
+  <select id="col" aria-label="Collection"></select>
+  <div class="seg" id="seg" role="group" aria-label="Authenticity grade">
+    <button data-g="ALL" aria-pressed="true">All grades</button><button data-g="SH" aria-pressed="false">Ṣaḥīḥ</button><button data-g="SHH" aria-pressed="false">+ Ḥasan</button><button data-g="WK" aria-pressed="false">Weak</button>
+  </div>
+  <div class="size" role="group" aria-label="Text size">
+    <span>TEXT</span>
+    <button id="fsdn" aria-label="Smaller text">A</button>
+    <button id="fsup" aria-label="Larger text">A</button>
+  </div>
+  <span class="tally" id="tally"></span>
+</div></div>
+
+<div class="wrap">
+  <nav class="rail" id="rail" data-open="0" aria-label="Topics"></nav>
+  <main>
+    <div class="note">
+      <div class="hd"><span class="star"></span><strong>What this is</strong></div>
+      <p><b id="n">20,603</b> distinct narrations from eight collections, filtered to <b>marfūʿ</b> reports — what the Prophet ﷺ said, did, ordered, or approved. Companion opinions and compiler chapter commentary are screened out, near-identical repetitions through different chains are merged and recorded rather than deleted, and the whole corpus is arranged across <b id="nt">67</b> practical topics instead of the compilers' original chapters.</p>
+      <details>
+        <summary>Read the limits before relying on any of it</summary>
+        <p style="margin-top:10px">Only <b>Ṣaḥīḥ al-Bukhārī</b> and <b>Ṣaḥīḥ Muslim</b> are sound throughout — that is what <i>Ṣaḥīḥ</i> in their titles claims. The four <i>Sunan</i> deliberately include weak material, so each narration carries a grade; <b>al-Muwaṭṭaʾ</b> and the partial <b>Musnad Aḥmad</b> have no grading source and show as ungraded, which means unverified, not authentic.</p>
+        <p>Grades come from the LK Ḥadīth Corpus (Leeds / King Saud University) and are al-Albānī's; other scholars grade differently. They were joined to each narration by matching wording, because the two sources number ḥadīth incompatibly — that join succeeded for over 99% in every collection, and it self-checks, since Bukhārī and Muslim come back essentially all ṣaḥīḥ.</p>
+        <p>Topic labels are assigned by keyword, so a narration can sit under a topic it only touches in passing. Browse with them; don't cite them. Reference numbers follow the source dataset and differ from sunnah.com's, so each card carries a <b>verify</b> link that searches by wording instead. For anything you intend to act on, read the Arabic and ask someone trained in the sciences of ḥadīth.</p>
+      </details>
+    </div>
+    <div class="crumb"><span class="star"></span><h2 id="crumb">All narrations</h2><span class="ln"></span></div>
+    <div id="out"><div class="load">Loading 20,603 narrations…</div></div>
+    <button class="more" id="more" hidden>Load more</button>
+  </main>
+</div>
+
+<script>
+const NAMES={bukhari:'Ṣaḥīḥ al-Bukhārī',muslim:'Ṣaḥīḥ Muslim',abudawud:'Sunan Abī Dāwūd',
+ tirmidhi:'Jāmiʿ at-Tirmidhī',nasai:'Sunan an-Nasāʾī',ibnmajah:'Sunan Ibn Mājah',
+ malik:'al-Muwaṭṭaʾ',ahmed:'Musnad Aḥmad (partial)'};
+const ORDER=['bukhari','muslim','abudawud','tirmidhi','nasai','ibnmajah','malik','ahmed'];
+const GROUPS=[
+ ["Worship & Ritual",["Faith & Creed","Prayer (Salah)","Purity & Wudu","Adhan & the Mosque","Night & Voluntary Prayer","Zakah & Charity","Fasting & Ramadan","Hajj & Umrah","Eid & Sacrifice","Quran & Recitation","Dhikr & Supplication","Repentance & Forgiveness"]],
+ ["Family & Household",["Parents","Marriage & Spouses","Women","Children & Upbringing","Relatives & Kinship","Neighbours","Orphans & the Weak","Servants & Freeing Slaves","Guests & Hospitality","Brotherhood & Friendship"]],
+ ["Character & the Heart",["Character & Manners","Truthfulness & Lying","Anger & Patience","Humility & Pride","Speech & Backbiting","Envy & Suspicion","Mercy & Kindness","Modesty & Dress","Knowledge & Scholars"]],
+ ["Sins & Prohibitions",["Major Sins","Adultery & Chastity","Alcohol & Intoxicants","Theft & Property","Usury & Interest","Oppression & Injustice","Bloodshed & Murder","Magic & Superstition"]],
+ ["Wealth, Law & Society",["Trade & Business","Debt & Loans","Inheritance & Wills","Justice & Judgement","Leadership & Governance","Oaths & Vows","Work & Livelihood","Treaties & Non-Muslims","Jihad & Battles"]],
+ ["Death & the Hereafter",["Death & Burial","The Grave & Barzakh","Day of Judgement","Resurrection & Intercession","Paradise","Hellfire","Signs of the End Times","Destiny & Decree","Angels & the Unseen"]],
+ ["Life, Body & World",["Food & Drink","Medicine & Healing","Trials & Illness","Dreams & Visions","Animals","Travel & Migration","Time, Days & Nights"]],
+ ["Prophets & History",["Prophets & Past Peoples","The Prophet's Life & Person","Other Narrations"]],
+];
+const PAGE=25;
+const STEPS=[0.92,1,1.12,1.26,1.42];
+let D=[],COUNT={},topic=null,query='',source='A',grade='ALL',shown=0,matches=[],fsi=1;
+
+function gcls(g){
+  if(!g) return 'u';
+  if(g.indexOf('Mawdu')===0) return 'm';
+  if(g.indexOf('Sahih')===0) return 's';
+  if(g.indexOf('Hasan')>=0) return 'h';
+  if(g.indexOf("Da'if")>=0||g.indexOf('Munkar')>=0||g.indexOf('Shadh')>=0) return 'd';
+  return 'u';
+}
+function gradeOK(g){
+  const c=gcls(g);
+  if(grade==='ALL') return true;
+  if(grade==='SH')  return c==='s';
+  if(grade==='SHH') return c==='s'||c==='h';
+  if(grade==='WK')  return c==='d'||c==='m';
+  return true;
+}
+function pool(){ return D.filter(h=>(source==='A'||h.s===source)&&gradeOK(h.g)); }
+function recount(){ COUNT={}; pool().forEach(h=>h.t.forEach(t=>COUNT[t]=(COUNT[t]||0)+1)); }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function applyFs(){
+  document.documentElement.style.setProperty('--fs',String(STEPS[fsi]));
+  document.getElementById('fsdn').disabled = fsi===0;
+  document.getElementById('fsup').disabled = fsi===STEPS.length-1;
+}
+
+function buildRail(){
+  const rail=document.getElementById('rail');
+  let h=`<button class="trow" data-t="__all" aria-pressed="${topic?'false':'true'}">All narrations <span class="c">${pool().length.toLocaleString()}</span></button>`;
+  const placed=new Set();
+  GROUPS.forEach(([g,ts])=>{
+    const live=ts.filter(t=>COUNT[t]); ts.forEach(t=>placed.add(t));
+    if(!live.length) return;
+    h+=`<h2>${esc(g)}</h2>`;
+    live.forEach(t=>{h+=`<button class="trow" data-t="${esc(t)}" aria-pressed="${topic===t?'true':'false'}">${esc(t)} <span class="c">${COUNT[t]}</span></button>`;});
+  });
+  const rest=Object.keys(COUNT).filter(t=>!placed.has(t)).sort();
+  if(rest.length){
+    h+=`<h2>Further topics</h2>`;
+    rest.forEach(t=>{h+=`<button class="trow" data-t="${esc(t)}" aria-pressed="${topic===t?'true':'false'}">${esc(t)} <span class="c">${COUNT[t]}</span></button>`;});
+  }
+  rail.innerHTML=h;
+}
+
+function recompute(){
+  const ql=query.trim().toLowerCase();
+  matches=pool().filter(h=>{
+    if(topic&&!h.t.includes(topic)) return false;
+    if(!ql) return true;
+    return h.x.toLowerCase().includes(ql)||h.nr.toLowerCase().includes(ql)||
+           h.b.toLowerCase().includes(ql)||h.t.some(t=>t.toLowerCase().includes(ql));
+  });
+  document.getElementById('crumb').textContent=topic||'All narrations';
+  document.getElementById('tally').textContent=
+    matches.length.toLocaleString()+(matches.length===1?' narration':' narrations');
+  document.getElementById('out').innerHTML='';
+  shown=0; page();
+}
+
+function page(){
+  const out=document.getElementById('out');
+  if(!matches.length){
+    out.innerHTML='<div class="none">No narrations match. Try another word, or pick a different topic or grade.</div>';
+    document.getElementById('more').hidden=true; return;
+  }
+  const slice=matches.slice(shown,shown+PAGE);
+  const frag=document.createElement('div');
+  frag.innerHTML=slice.map(h=>{
+    const cls=gcls(h.g);
+    const nar=h.nr?esc(h.nr.replace(/^Narrated\s*/i,'').replace(/:$/,'')):'';
+    const dup=(h.also&&h.also.length)
+      ?`<span class="dup">also at ${h.also.slice(0,3).join(', ')}${h.also.length>3?'…':''}</span>`:'';
+    return `<article class="card ${cls==='s'?'':cls==='u'?'u':'w'}">
+      ${nar?`<div class="nar">Narrated ${nar}</div>`:''}
+      <div class="body">${esc(h.x)}</div>
+      <div class="foot">
+        <span class="gr ${cls}">${esc(h.g||'no grade')}</span>
+        <span class="stamp">${esc(NAMES[h.s]||h.s)} · ${esc(h.b)} · no. ${h.n}</span>
+        <span class="tags">${h.t.map(t=>`<button class="tg" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</span>
+        ${dup}
+        <a class="vf" target="_blank" rel="noopener"
+           href="https://sunnah.com/search?q=${encodeURIComponent(h.q||'')}">verify ↗</a>
+      </div></article>`;
+  }).join('');
+  while(frag.firstChild) out.appendChild(frag.firstChild);
+  shown+=slice.length;
+  const m=document.getElementById('more');
+  m.hidden=shown>=matches.length;
+  m.textContent=`Load more · ${(matches.length-shown).toLocaleString()} remaining`;
+}
+
+function setTopic(t){
+  topic=t; document.getElementById('rail').dataset.open='0';
+  buildRail(); recompute(); window.scrollTo({top:0});
+}
+
+document.getElementById('rail').addEventListener('click',e=>{
+  const b=e.target.closest('.trow'); if(!b) return;
+  setTopic(b.dataset.t==='__all'?null:b.dataset.t);
+});
+document.getElementById('out').addEventListener('click',e=>{
+  const b=e.target.closest('.tg'); if(!b) return;
+  query=''; document.getElementById('q').value=''; setTopic(b.dataset.t);
+});
+document.getElementById('more').addEventListener('click',page);
+document.getElementById('col').addEventListener('change',e=>{
+  source=e.target.value; recount();
+  if(topic&&!COUNT[topic]) topic=null;
+  buildRail(); recompute(); window.scrollTo({top:0});
+});
+document.getElementById('seg').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  grade=b.dataset.g;
+  document.querySelectorAll('#seg button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  recount();
+  if(topic&&!COUNT[topic]) topic=null;
+  buildRail(); recompute(); window.scrollTo({top:0});
+});
+document.getElementById('fsup').addEventListener('click',()=>{
+  if(fsi<STEPS.length-1){fsi++;applyFs();}
+});
+document.getElementById('fsdn').addEventListener('click',()=>{
+  if(fsi>0){fsi--;applyFs();}
+});
+let timer;
+document.getElementById('q').addEventListener('input',e=>{
+  clearTimeout(timer); const v=e.target.value;
+  timer=setTimeout(()=>{query=v; recompute();},170);
+});
+document.getElementById('railbtn').addEventListener('click',()=>{
+  const r=document.getElementById('rail');
+  r.dataset.open=r.dataset.open==='1'?'0':'1';
+});
+
+applyFs();
+fetch('hadith.json').then(r=>{
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
+}).then(data=>{
+  D=data;
+  document.getElementById('n').textContent=D.length.toLocaleString();
+  const cnt={}; D.forEach(h=>cnt[h.s]=(cnt[h.s]||0)+1);
+  document.getElementById('col').innerHTML=
+    `<option value="A">All collections (${D.length.toLocaleString()})</option>`+
+    ORDER.map(k=>`<option value="${k}">${NAMES[k]} (${(cnt[k]||0).toLocaleString()})</option>`).join('');
+  recount();
+  document.getElementById('nt').textContent=Object.keys(COUNT).length;
+  buildRail(); recompute();
+}).catch(err=>{
+  const local = location.protocol === 'file:';
+  document.getElementById('out').innerHTML =
+    '<div class="none">' +
+    (local
+      ? 'Browsers block data files when a page is opened straight from disk, so ' +
+        'the narrations cannot load this way.<br><br>Serve the folder instead — run ' +
+        '<code>python3 -m http.server 8000</code> in the repository root, then open ' +
+        '<code>http://localhost:8000/app/</code>.<br><br>For a single file that opens ' +
+        'with no server, run <code>python3 scripts/build_app_data.py --standalone</code>.'
+      : 'The narration data could not be loaded (' + esc(err.message) +
+        '). Reload the page to try again.') +
+    '</div>';
+});
+</script>

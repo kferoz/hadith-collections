@@ -24,3 +24,8 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# Standalone single-file build — regenerate with:
+#   python3 scripts/build_app_data.py --standalone
+# Not committed: it duplicates app/hadith.json, already in the repo.
+app/hadith_library_standalone.html

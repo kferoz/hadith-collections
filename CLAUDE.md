@@ -205,6 +205,33 @@ without knowing its grade status.
 
 ---
 
+## Articles (`articles/`)
+
+Narrative long-form built on the dataset, read in `articles/index.html`.
+**`docs/ARTICLE_GUIDELINES.md` is the governing document** — read it before
+writing or editing any article.
+
+The one thing to know before touching this: **article sources never contain
+hadith text.** They contain references — `{"ref": ["bukhari", 4457]}`, with
+optional `from`/`to` markers to excerpt — and `scripts/build_articles.py`
+resolves them against `app/hadith.json`, writing text, book and grade from the
+dataset. A reference that does not resolve, or resolves to anything not graded
+Ṣaḥīḥ, fails the build.
+
+This exists because of a real failure, not a hypothetical one: on the first
+draft of the sīra series, **six of eight reference numbers were written from
+recall and every one pointed at an unrelated narration.** The prose read fine;
+the citations were wrong. Rule 1 caught it. The reference-only design now makes
+that error impossible rather than merely detectable. Write prose freely; never
+write a hadith.
+
+Articles are also expected to **say what the authentic record does not contain**.
+Most of the familiar biography comes from *sīra* literature that never passed
+hadith criticism, so article one omits the wet-nurse, the monk, and the head
+bowed to the saddle — and says why rather than leaving unexplained gaps.
+
+---
+
 ## Tone when reporting results
 
 Report what was actually built and what failed. If a collection came back with

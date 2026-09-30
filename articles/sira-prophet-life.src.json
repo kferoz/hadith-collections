@@ -1,0 +1,505 @@
+{
+ "id": "sira-prophet-life",
+ "title": "The Life of the Prophet ﷺ",
+ "subtitle": "From birth to death, told through narrations that scholars accept as authentic",
+ "kicker": "SERIES ONE · SĪRA",
+ "readingTime": "About 45 minutes",
+ "summary": "A chronological telling of the Prophet Muhammad's life ﷺ, built only from narrations graded authentic. Where the authentic record is silent, this series says so rather than filling the gap.",
+ "sourceNote": "Every quoted narration below is drawn from this repository's graded dataset and carries its collection, reference number and grade. Long narrations are shortened with “…”; no wording is changed. Numbers follow the source dataset and differ slightly from sunnah.com's, so search the wording rather than the number when verifying.",
+ "chapters": [
+  {
+   "n": 1,
+   "id": "before-the-light",
+   "title": "Before the Light",
+   "era": "c. 570–610 CE · Makkah",
+   "blurb": "A boy who lost everyone, in a city that trusted him completely.",
+   "sections": [
+    {
+     "heading": "What we can and cannot know",
+     "paras": [
+      "Start with an honest admission, because it shapes everything that follows.",
+      "Most of what people recount about the Prophet's childhood — the year of the elephant, the wet-nurse who fostered him in the desert, the monk who recognised something in the boy's face — comes from a body of writing called the *sīra*: early biographies, gathered a century or more after his death, by writers who collected stories widely and left the sifting to others.",
+      "That is a different kind of book from a hadith collection. The great hadith scholars applied a brutal filter: every chain of transmission examined, every narrator's memory and honesty weighed. Material that failed was discarded. Much of the childhood narrative never went through that filter at all.",
+      "So this series will not retell those stories as fact. Not because they are certainly false — some may well be true — but because you asked for what is authentic, and honesty about the boundary is part of that.",
+      "What the authentic record *does* give us about the early years is thinner, and stranger for it. A few fixed points. A man's own words about his own childhood. And, in one line, a picture of how his city saw him before any of them believed a word he said."
+     ],
+     "hadith": []
+    },
+    {
+     "heading": "The most trusted man in Makkah",
+     "paras": [
+      "Here is the detail that survives every test, and it is worth pausing on.",
+      "Years later, when he first stood up in public to say that God had spoken to him, he began by asking his people a question. Not a sermon — a question, designed to test what they already thought of him.",
+      "He asked whether they would believe him if he told them an army was massing behind the mountain, out of sight, about to attack.",
+      "Read their answer slowly. These were people who were, within moments, going to reject everything he said. They had every reason to call him a liar. And what they said instead was that they had never caught him in a lie — not once, in forty years.",
+      "That is the foundation the whole story is built on. Whatever else was in dispute, his honesty was not. The city that would soon drive him out had already agreed, unanimously and on the record, that he did not lie.",
+      "Keep that in mind through everything that comes next. When they called him mad, or possessed, or a poet, notice what they never quite managed to call him."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        4564
+       ],
+       "from": "When the Verse",
+       "to": "other than the truth."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "id": "the-cave",
+   "title": "The Cave",
+   "era": "c. 610 CE · Mount Hira",
+   "blurb": "A man goes up a mountain to be alone. He comes down shaking.",
+   "sections": [
+    {
+     "heading": "A habit of solitude",
+     "paras": [
+      "Before anything happened, there was a habit.",
+      "He had begun to love being alone. He would climb to a cave on Mount Hira, above Makkah, and stay there — days at a stretch — worshipping, thinking, away from the noise of the city below. His wife Khadija would pack food for the stay. When it ran out he came down, restocked, and went back up.",
+      "Picture the ordinariness of that arrangement. A wife packing provisions. A man walking up a hill. This went on for a long time before it became a story worth telling.",
+      "It started with dreams. He would see something in his sleep and then watch it arrive in daylight, exactly as he had seen it — over and over, until the pattern was unmistakable. Aisha, narrating this later, reaches for an image to describe how clearly those dreams came true: like the breaking of dawn.",
+      "Then one day in the cave, it stopped being dreams."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        3
+       ],
+       "from": "The commencement",
+       "to": "cave of Hira."
+      }
+     ]
+    },
+    {
+     "heading": "Read",
+     "paras": [
+      "The angel said one word: *Read.*",
+      "He answered honestly — he could not read. He had never learned. And then something happened that no one inventing a heroic story would think to include: the angel seized him and pressed him, hard, until he could not bear it. Then let go. Then said it again.",
+      "Read. I cannot read. Pressed again. Released. A third time.",
+      "Only then came the words he was meant to carry — the opening lines of what would become the Qur'an.",
+      "Notice what this scene is not. There is no glow of destiny, no serene acceptance. A man is physically overwhelmed by something he does not understand and cannot refuse. Three times he says *I can't*, and three times he is made to.",
+      "He came down the mountain with his heart pounding and went straight to his wife. He did not announce a mission. He said: cover me, cover me. He was frightened for himself, and he said so.",
+      "What Khadija did next is one of the quiet hinges of history. She did not doubt him and she did not flatter him. She told him plainly that God would never disgrace him — and she gave her reasons, and every reason she gave was about his character: he kept family ties, he carried the weak, he gave to the poor, he helped people through disasters.",
+      "Then she took him to someone who might understand: her elderly cousin Waraqa, who knew the earlier scriptures. Waraqa heard the account and said it was the same one who had come to Moses. And he added a warning that must have landed like cold water — that the man's own people would drive him out.",
+      "He asked, disbelieving: *Will they drive me out?* Waraqa said yes. Every man who ever brought what you are bringing was treated as an enemy."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        3
+       ],
+       "from": "The angel came to him",
+       "to": "Most Generous."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "id": "the-open-call",
+   "title": "The Open Call",
+   "era": "c. 613 CE · Makkah",
+   "blurb": "He climbs a hill, gathers the city, and loses them in a sentence.",
+   "sections": [
+    {
+     "heading": "Standing on Safa",
+     "paras": [
+      "For about three years it stayed quiet — family, close friends, a handful of others. Then came the instruction to warn his nearest relatives, and he did something public and irreversible.",
+      "He climbed Safa, a rise near the centre of Makkah, and started shouting clan names. O Bani Fihr. O Bani ʿAdi. It was the standard alarm call — the way you summoned the city when danger was coming. People came. Those who could not come sent someone to find out what was happening.",
+      "So there he stood, with the city assembled, holding their complete attention and their complete trust.",
+      "And he used it to ask them the cavalry question — *would you believe me?* — and to hear them answer that they had never known him to lie.",
+      "Then he told them he was a warner, and that a severe punishment was coming.",
+      "That was the whole speech. It took seconds.",
+      "His own uncle, Abu Lahab, answered first, and what he said was closer to a curse than an argument: *May you perish. Did you gather us only for this?*",
+      "The crowd broke up. Nothing visible had changed. But the line had been crossed in public, in front of everyone, and there was no walking it back."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "muslim",
+        414
+       ],
+       "from": "the Messenger of Allah",
+       "to": "a severe torment."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "id": "years-of-pressure",
+   "title": "The Years of Pressure",
+   "era": "c. 613–619 CE · Makkah",
+   "blurb": "What it costs to keep saying a thing nobody wants to hear.",
+   "sections": [
+    {
+     "heading": "The cost, in plain terms",
+     "paras": [
+      "What followed was not a dramatic persecution with villains twirling moustaches. It was grinding, petty, and personal — the kind that wears people down.",
+      "He was mocked in the street. Filth was thrown on him while he prayed. His followers, especially the ones with no powerful family to protect them, were beaten and starved. Some were held down in the sun.",
+      "A detail worth sitting with: the ones who suffered worst were the poor and the enslaved. The wealthy converts had clans that would retaliate; the vulnerable had no one. Injustice found the weakest first, exactly as it usually does.",
+      "The pressure escalated into an organised boycott — his whole clan cut off from trade and marriage, squeezed for years.",
+      "And through this stretch he lost the two people holding up his private world: Khadija, who had believed him first, and his uncle Abu Talib, whose protection had kept the worst at bay. Both within roughly the same period.",
+      "There is no authentic narration that gives us his grief in his own words. The record is quiet there. But you can measure it by what he did next — he walked to the neighbouring town of Ta'if to look for a hearing, and was driven out.",
+      "This is the lowest point of the Makkan years. No army, no state, no protector, and a message almost nobody wanted."
+     ],
+     "hadith": []
+    },
+    {
+     "heading": "A king across the sea",
+     "paras": [
+      "Before the worst of it, he made a decision that tells you something about him as a leader: he told a group of his followers to leave.",
+      "Not to fight, not to endure — to go. Across the Red Sea to Abyssinia, a Christian kingdom under a ruler he described as a king under whom no one is wronged.",
+      "Think about what that instruction costs a movement. You send away some of your most committed people, including your own daughter, to a foreign country where you have no leverage and no way to protect them. You do it because their safety matters more than your numbers.",
+      "The Quraish sent a delegation after them to demand their return. The king refused.",
+      "Those emigrants were away for years. Some did not return until long after the community had moved to Madinah — one group arriving, as the narrations note, around the time of Khaybar, and the Prophet ﷺ receiving them with visible joy."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        3713
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "id": "night-journey",
+   "title": "The Night Journey",
+   "era": "c. 620 CE · Makkah to Jerusalem",
+   "blurb": "In the hardest year of his life, he is taken somewhere else entirely.",
+   "sections": [
+    {
+     "heading": "Carried away",
+     "paras": [
+      "This is the strangest episode in the entire biography, and it is also one of the best-attested — narrated by several companions, in both of the two most rigorous collections.",
+      "In one night he was taken from Makkah to Jerusalem, and from there through the heavens.",
+      "He describes the mount he rode, *al-Burāq*, in oddly practical terms: white, longer than a donkey, shorter than a mule, and it placed each hoof as far as it could see. He tied it to the ring the prophets used. He prayed inside the mosque there.",
+      "Then Gabriel offered him two vessels — one of wine, one of milk. He chose the milk. Gabriel told him he had chosen the natural thing, the sound instinct.",
+      "Then heaven by heaven, each gate opened after the same exchange, and at each level a prophet he had only ever heard of: Adam, Jesus and John, Joseph, Idris, Aaron, Moses, and Abraham resting against the House that stands above.",
+      "Whatever you make of it, notice the timing. This comes at his lowest ebb — after the boycott, after the deaths, after Ta'if. He is shown the whole scale of the thing at the moment he has least reason to believe it is going anywhere."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "muslim",
+        316
+       ],
+       "from": "I was brought al-Buraq",
+       "to": "took me to heaven."
+      }
+     ]
+    },
+    {
+     "heading": "The negotiation",
+     "paras": [
+      "What happens next is, frankly, remarkable — and it is in the authentic collections, not in folklore.",
+      "The daily prayers are made obligatory: fifty of them.",
+      "On the way back down, Moses asks what he has been given. Fifty prayers a day. Moses tells him to go back and ask for a reduction — he says plainly that he has dealt with people before, he worked hard with the Children of Israel, and this community will not manage it.",
+      "So he goes back. The number drops. He comes down; Moses sends him up again. And again. And again.",
+      "It only stops at five — with the reward of fifty still attached.",
+      "Even then, Moses tells him to go back once more. And this time he says no. He says he has asked his Lord until he is ashamed to ask again, and he accepts.",
+      "Read that scene as a human being and not as a theologian for a moment. One prophet arguing for mercy on behalf of people not yet born. Another prophet saying, enough, I cannot ask for more. It is one of the few places in scripture where you watch a decision being made rather than announced."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        3074
+       ],
+       "from": "Then fifty prayers",
+       "to": "Final Order"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "id": "the-road-north",
+   "title": "The Road North",
+   "era": "622 CE · Makkah to Madinah",
+   "blurb": "Two men in a cave, and a search party standing right outside.",
+   "sections": [
+    {
+     "heading": "Leaving",
+     "paras": [
+      "Thirteen years of preaching in Makkah had produced a community too small to defend itself and too stubborn to disappear. Then people from Yathrib — a city to the north, later called Madinah — came and offered something no one in Makkah would: a home, and protection.",
+      "The believers left in small groups, quietly, over weeks. He stayed until last.",
+      "Then he left with Abu Bakr, and they did the counter-intuitive thing: instead of heading north toward Madinah, they went south, to a cave on Mount Thawr, and waited there while the search parties swept past.",
+      "Abu Bakr's fear in that cave was not for himself. He said afterwards that he looked at the feet of the men standing above them and told the Prophet ﷺ that if any of them merely looked down at his feet, he would see them.",
+      "The answer he got is one of the most quoted lines in the whole tradition, and it is in Bukhari: *What do you think of two, the third of whom is Allah?*",
+      "They waited three nights. Then they rode north.",
+      "Muslims still count their years from this journey — not from his birth, not from the first revelation, but from the night a persecuted community found somewhere to stand."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        4457
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "id": "badr",
+   "title": "Badr",
+   "era": "624 CE · Badr",
+   "blurb": "Three hundred men against a thousand, and a prayer that would not stop.",
+   "sections": [
+    {
+     "heading": "The night before",
+     "paras": [
+      "Two years after arriving in Madinah, the first real battle came.",
+      "The numbers were not close. ʿUmar, who was there, gives them precisely: the enemy a thousand, his own side three hundred and nineteen.",
+      "What the narration preserves is not a rousing speech. It is the Prophet ﷺ turning toward the qibla, stretching out his hands, and praying — and then not stopping.",
+      "He kept asking. He said that if this small band were destroyed, God would not be worshipped on this earth. He went on until his cloak slipped from his shoulders.",
+      "Abu Bakr came up behind him, picked up the cloak, put it back on him, and told him that was enough — that he had appealed to his Lord enough.",
+      "There is something very human in that image: a friend physically covering a man who has prayed himself past exhaustion.",
+      "They won. Badr is remembered as the day the balance tipped — the day a community that had spent thirteen years absorbing blows discovered it could stand."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "muslim",
+        4456
+       ],
+       "from": "When it was the day",
+       "to": "picked up"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "id": "uhud",
+   "title": "Uhud",
+   "era": "625 CE · Mount Uhud",
+   "blurb": "The year they learned what disobedience costs.",
+   "sections": [
+    {
+     "heading": "The archers",
+     "paras": [
+      "A year after Badr, the Makkans came back for a rematch, and this time they brought three thousand.",
+      "The Prophet ﷺ placed fifty archers on a rise and gave them an order with no expiry date: hold this position. Do not leave it, whether you see us winning or see us being picked apart by birds.",
+      "The battle went well. Then the Makkan line broke and the Muslims began collecting the spoils — and most of the archers, seeing victory, came down off the hill.",
+      "The Makkan cavalry came round the undefended side. What had been a rout became a disaster.",
+      "The Prophet ﷺ himself was wounded — his face struck, a tooth broken. A rumour went through the field that he had been killed. Seventy of his companions died, including his uncle Hamza.",
+      "This is not how a movement writes its own history. A community inventing its scripture does not preserve, in exhaustive detail, the day it lost because its own men disobeyed a direct order.",
+      "That is part of why historians take this material seriously. The tradition kept its failures on the record, in the most rigorous collections, with names attached."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        2914
+       ],
+       "from": "The Prophet",
+       "to": "till I send for you."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 9,
+   "id": "the-trench",
+   "title": "The Trench",
+   "era": "627 CE · Madinah",
+   "blurb": "A siege, a ditch, and a man digging alongside everyone else.",
+   "sections": [
+    {
+     "heading": "Digging",
+     "paras": [
+      "Two years later the Makkans came back a third time, with allies — the largest force Arabia had assembled against them. The sources call it the battle of the Confederates.",
+      "The Muslim answer was not a battle line. It was a ditch, dug across the exposed approach to the city, on the advice of Salman the Persian — a defensive trick Arabian warfare had not seen.",
+      "What the narrations preserve about those days is not strategy. It is the cold, the hunger, and the fact that the Prophet ﷺ was down in the ditch with everyone else, carrying earth on his own back.",
+      "What the narrations preserve about those days is not strategy. It is hunger, and the fact that the Prophet ﷺ was down in the ditch with everyone else, carrying earth on his own back.",
+      "One companion remembers them hitting a rock they could not break, and the Prophet ﷺ coming down to strike it himself — with a stone tied against his belly, because nobody had eaten for three days.",
+      "The siege lasted weeks. Then a bitter wind came through the camp at night and tore it apart, and by morning the confederates had gone home.",
+      "No great battle. The largest army ever raised against them simply dispersed."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        3634
+       ]
+      },
+      {
+       "ref": [
+        "bukhari",
+        3929
+       ],
+       "from": "We were digging",
+       "to": "became like sand."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 10,
+   "id": "hudaybiyyah",
+   "title": "The Treaty That Looked Like Defeat",
+   "era": "628 CE · Hudaybiyyah",
+   "blurb": "He signs terms his own followers consider humiliating. Then he is proved right.",
+   "sections": [
+    {
+     "heading": "Turned back at the border",
+     "paras": [
+      "In 628 he set out for Makkah with around fourteen hundred people, unarmed but for travelling swords, intending to perform the pilgrimage. Not a raid — a pilgrimage.",
+      "The Quraish blocked the road.",
+      "At a place called Hudaybiyyah, his camel knelt and would not move. The men said she was being stubborn. He said something else — that she was being held back by the same power that once held the elephant from entering Makkah — and that he would accept any terms the Quraish asked, if those terms honoured what God had made sacred.",
+      "Then he negotiated, and the terms were hard. Go home this year without the pilgrimage. Come next year instead. A ten-year truce. And a clause that stung: anyone who leaves Makkah for you must be returned, but anyone who leaves you for Makkah need not be.",
+      "His companions were close to breaking. ʿUmar went to him and asked, more or less, whether they were not in the right — so why were they accepting humiliation?",
+      "He signed.",
+      "Within two years, more people had entered Islam under that peace than in all nineteen years of conflict before it. The truce gave the message something war never had: open roads and time to be heard.",
+      "It is the clearest single example of a principle that runs through his whole life — that the thing which looks like losing and the thing which *is* losing are not always the same thing."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        2620
+       ],
+       "from": "The she-camel",
+       "to": "grant it to them."
+      }
+     ]
+    },
+    {
+     "heading": "The pledge under the tree",
+     "paras": [
+      "One moment from those days is worth its own telling.",
+      "A rumour reached the camp that their envoy in Makkah had been killed. If true, the truce talks were over and they were about to fight, outnumbered, far from home, and unprepared.",
+      "The Prophet ﷺ sat under a tree and called for a pledge. One by one, fourteen hundred men came and gave their word that they would not flee.",
+      "Salama, who was there, says he was the first to come — and then came back a second time, and a third, when the Prophet ﷺ called for more.",
+      "The envoy turned out to be alive. The pledge was never tested.",
+      "But it was remembered, and it is remembered still, as the measure of what those people were prepared to do on a rumour, on a hot afternoon, with nothing to gain."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "muslim",
+        4547
+       ],
+       "from": "We arrived at Hudaibiya",
+       "to": "in the first instance."
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 11,
+   "id": "the-return",
+   "title": "The Return",
+   "era": "630 CE · Makkah",
+   "blurb": "He comes back to the city that drove him out, with ten thousand men behind him.",
+   "sections": [
+    {
+     "heading": "Coming back",
+     "paras": [
+      "The truce held for two years. Then an allied tribe of the Quraish attacked an allied tribe of the Muslims, and it broke.",
+      "He marched on Makkah with ten thousand.",
+      "The city that had mocked him, boycotted his family, tortured his followers and plotted his death had no answer to that number. It surrendered without a real fight.",
+      "Here is the detail the narrations keep, and it is worth more than any description of the army.",
+      "He entered the city wearing a helmet — and the narration that records it is not interested in triumph at all. It moves straight past his entry to a man clinging to the covering of the Kaʿba, and a judgement passed on him.",
+      "Popular retellings describe him riding in with his head bowed almost to the saddle in humility. It is a beautiful image and it may well be true — but it comes from the sīra literature, not from the authentic collections, so this series will not present it as established.",
+      "Then he went to the Kaʿba and cleared out the idols. And to the people of the city — the ones who had done all of it — he gave a judgement they did not expect: they were free to go.",
+      "One further line from that day reframes everything the previous twenty years had been about. He said there was no migration after the conquest, but intention and striving remained. The emergency was over. What was left was the work."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        1778
+       ]
+      },
+      {
+       "ref": [
+        "bukhari",
+        2952
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "n": 12,
+   "id": "the-farewell",
+   "title": "The Farewell",
+   "era": "632 CE · ʿArafat and Madinah",
+   "blurb": "One sermon, one illness, and a head resting on his wife's chest.",
+   "sections": [
+    {
+     "heading": "What he said at the end",
+     "paras": [
+      "In the tenth year after the migration he made the pilgrimage, and something in his manner told people this was a farewell.",
+      "He addressed the largest gathering of his life, and he did it by asking questions rather than making declarations. Which month is this? Which town? Which day?",
+      "Each time they answered — the sacred month, the sacred town, the sacred day.",
+      "Then he made the comparison that the whole sermon exists to deliver: your blood, your property and your honour are as sacred to one another as this day, in this town, in this month.",
+      "That is the summary of twenty-three years. Not a doctrine. A boundary around every human being's life, property and dignity, fixed by the most sacred thing his audience could imagine.",
+      "He asked whether he had delivered the message. They said he had. He asked God to witness it."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        6539
+       ],
+       "from": "Allah Apostle said",
+       "to": "in this month of yours"
+      }
+     ]
+    },
+    {
+     "heading": "The last days",
+     "paras": [
+      "Months later he fell ill.",
+      "During that illness he kept asking his wives the same question — *where shall I stay tomorrow? where shall I stay tomorrow?* They understood what he was really asking, and they told him to stay wherever he wished. So he stayed in Aisha's house.",
+      "There is no drama in what the narrations preserve of the end. There is a brother bringing a *siwāk* — a tooth-stick — and the Prophet ﷺ being too weak to soften it, and Aisha chewing it for him so he could use it. A man cleaning his teeth, with help, on his last day.",
+      "He died with his head between her chest and her neck.",
+      "He left no palace, no treasury, no dynasty. He left a community, a book, and a body of narrations that people would spend the next twelve centuries sorting, weighing, grading and arguing over — which is the only reason you can read any of this with a grade attached to it.",
+      "Everything in this series came through that filter. Where it had nothing to give, this series said so."
+     ],
+     "hadith": [
+      {
+       "ref": [
+        "bukhari",
+        5008
+       ],
+       "from": "during his fatal ailment",
+       "to": "mixed with my saliva."
+      },
+      {
+       "ref": [
+        "bukhari",
+        2972
+       ],
+       "from": "The Prophet",
+       "to": "cleaned his teeth with it."
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

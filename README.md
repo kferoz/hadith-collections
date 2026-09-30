@@ -89,12 +89,16 @@ Fifteen collections beyond the Nine Books, extracted from
 ```
 app/index.html                Browsable app — topic rail, grade filter, search
 app/hadith.json               Its data, built from data/english-graded/
+articles/index.html           Article reader — narrative series built on the data
+articles/*.src.json           Article sources (hadith by reference, never by text)
 data/english-graded/          Tier 1, CSV + JSON
 data/arabic-ungraded/         Tier 2a, CSV + JSON
 data/openiti/                 Tier 2b, CSV
 scripts/build_app_data.py     Rebuild app/hadith.json from the committed data
+scripts/build_articles.py     Resolve article references into published articles
 scripts/openiti_hadith.py     Extract any OpenITI collection (pure stdlib)
 scripts/dorar_fetch.py        Attach Dorar.net grades (run off a restricted network)
+docs/ARTICLE_GUIDELINES.md    Rules every article follows — read before writing one
 docs/DATA_SOURCES_GUIDE.md    Where the data comes from and how to get more
 docs/PROMPT_PLAYBOOK.md       Staged prompts for rebuilding this in Claude Code
 CLAUDE.md                     Project memory — constraints, methods, known bugs
@@ -117,7 +121,26 @@ python3 scripts/build_app_data.py --standalone   # writes app/hadith_library_sta
 ```
 
 The app reads 20,603 narrations, filterable by topic, collection and grade, with a
-text-size control for comfortable reading at any age.
+text-size control for comfortable reading at any age. The reader at
+`http://localhost:8000/articles/` carries the narrative series.
+
+### Articles
+
+`articles/` holds long-form series built on this dataset. The first is **The Life
+of the Prophet ﷺ** — twelve chapters, birth to death, quoting only narrations
+graded authentic.
+
+Article sources hold **references, never hadith text**:
+
+```json
+{"ref": ["bukhari", 3074], "from": "Then fifty prayers", "to": "Final Order"}
+```
+
+`scripts/build_articles.py` resolves each one against `app/hadith.json` and
+writes the text, book and grade from the dataset. A reference that does not
+resolve — or resolves to anything not graded Ṣaḥīḥ — fails the build, so a
+quotation can be shortened but never invented. Rules for writing them are in
+`docs/ARTICLE_GUIDELINES.md`.
 
 CSV columns: `collection, ref_no, grade, book_chapter, narrator, hadith_text,
 topics, also_narrated_at, verify_phrase` (Tier 1) and `collection, seq_no,

@@ -1,0 +1,324 @@
+<title>Hadith Articles</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,ital,wght@7..72,0,400;7..72,0,500;7..72,0,600;7..72,1,400&family=Outfit:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a chapter rail beside a single-column reading measure. Long-form
+   reading is the whole job, so the column is narrow, the type is large, and
+   the gradients (lapis → jade → gold leaf, from manuscript illumination) stay
+   on the chrome and the hadith cards — never behind running text. */
+:root{
+  --fs:1;
+  --paper:#fffdf8; --ground:#f6f1e6; --ink:#161d2e; --ink-2:#333c56;
+  --muted:#6a7287; --rule:#e3dcc9;
+  --lapis:#1e3170; --jade:#146055; --brass:#a97b2e; --gold:#d9a94a;
+  --g-bar:linear-gradient(105deg,#141b2e 0%,#1b2f63 46%,#13564c 100%);
+  --g-accent:linear-gradient(180deg,var(--gold),var(--brass));
+  --g-jade:linear-gradient(180deg,#1f7a68,#12544a);
+  --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(30,49,112,.07),transparent 62%),
+           radial-gradient(900px 380px at 92% 4%,rgba(169,123,46,.09),transparent 60%);
+  --g-hadith:linear-gradient(135deg,rgba(30,49,112,.055),rgba(20,96,85,.05) 55%,rgba(169,123,46,.06));
+  --bar-fg:#f5f1e6; --bar-sub:#a6afc6; --bar-in:rgba(255,255,255,.10);
+  --bar-edge:rgba(255,255,255,.22);
+  --chip:#efe9da; --chip-fg:#454d63; --rail-hi:#efe9db;
+  --gs-bg:#e0efe7; --gs-fg:#0e5539;
+  --shadow:0 3px 16px rgba(22,29,46,.08);
+  --serif:'Literata','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --sans:'Outfit','Avenir Next','Segoe UI',system-ui,-apple-system,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#1a2030; --ground:#11151f; --ink:#eee9dc; --ink-2:#c6cddd;
+  --muted:#939bb0; --rule:#2f3748;
+  --lapis:#7f9bea; --jade:#4fb69e; --brass:#dcb063; --gold:#f0cc7e;
+  --g-bar:linear-gradient(105deg,#080b13 0%,#121e45 48%,#0b3b34 100%);
+  --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(83,116,224,.11),transparent 62%),
+           radial-gradient(900px 380px at 92% 4%,rgba(220,176,99,.09),transparent 60%);
+  --g-hadith:linear-gradient(135deg,rgba(83,116,224,.10),rgba(79,182,158,.07) 55%,rgba(220,176,99,.08));
+  --bar-fg:#eee9dc; --bar-sub:#98a1b8; --bar-in:rgba(255,255,255,.08);
+  --bar-edge:rgba(255,255,255,.18);
+  --chip:#272e3e; --chip-fg:#bfc6d6; --rail-hi:#232a3a;
+  --gs-bg:#10362a; --gs-fg:#7fd9b5;
+  --shadow:0 3px 16px rgba(0,0,0,.4);
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#1a2030; --ground:#11151f; --ink:#eee9dc; --ink-2:#c6cddd;
+  --muted:#939bb0; --rule:#2f3748;
+  --lapis:#7f9bea; --jade:#4fb69e; --brass:#dcb063; --gold:#f0cc7e;
+  --g-bar:linear-gradient(105deg,#080b13 0%,#121e45 48%,#0b3b34 100%);
+  --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(83,116,224,.11),transparent 62%),
+           radial-gradient(900px 380px at 92% 4%,rgba(220,176,99,.09),transparent 60%);
+  --g-hadith:linear-gradient(135deg,rgba(83,116,224,.10),rgba(79,182,158,.07) 55%,rgba(220,176,99,.08));
+  --bar-fg:#eee9dc; --bar-sub:#98a1b8; --bar-in:rgba(255,255,255,.08);
+  --bar-edge:rgba(255,255,255,.18);
+  --chip:#272e3e; --chip-fg:#bfc6d6; --rail-hi:#232a3a;
+  --gs-bg:#10362a; --gs-fg:#7fd9b5;
+  --shadow:0 3px 16px rgba(0,0,0,.4);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--g-page),var(--ground);background-attachment:fixed;
+  color:var(--ink);font-family:var(--serif);line-height:1.75}
+button,select,input{font-family:inherit}
+.star{position:relative;width:12px;height:12px;flex:0 0 auto}
+.star::before,.star::after{content:'';position:absolute;inset:0;background:var(--g-accent)}
+.star::after{transform:rotate(45deg)}
+
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--g-bar);
+  color:var(--bar-fg);box-shadow:0 2px 18px rgba(0,0,0,.2)}
+.bar::after{content:'';display:block;height:4px;background:var(--g-accent)}
+.bar .row{max-width:1240px;margin:0 auto;padding:13px 22px;
+  display:flex;gap:13px;align-items:center;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}
+.brand h1{font-family:var(--sans);font-size:calc(19px*var(--fs));letter-spacing:.11em;
+  text-transform:uppercase;margin:0;font-weight:600;line-height:1.2}
+.brand .sub{font-family:var(--sans);font-size:calc(11.5px*var(--fs));color:var(--bar-sub);
+  letter-spacing:.14em;margin-top:3px;font-weight:500}
+.spacer{flex:1 1 auto}
+.size{display:flex;gap:4px;align-items:center;flex:0 0 auto}
+.size span{font-family:var(--sans);font-size:calc(12px*var(--fs));color:var(--bar-sub);
+  letter-spacing:.06em;margin-right:2px}
+.size button{width:40px;height:40px;border-radius:9px;border:1.5px solid var(--bar-edge);
+  background:var(--bar-in);color:var(--bar-fg);font-family:var(--sans);cursor:pointer;font-weight:600}
+.size button:nth-of-type(1){font-size:13px}
+.size button:nth-of-type(2){font-size:18px}
+.railbtn{display:none;background:var(--bar-in);border:1.5px solid var(--bar-edge);color:var(--bar-fg);
+  font-family:var(--sans);font-size:calc(14.5px*var(--fs));padding:11px 14px;border-radius:9px;
+  cursor:pointer;min-height:44px;font-weight:500}
+
+.wrap{max-width:1240px;margin:0 auto;display:flex;align-items:flex-start}
+.rail{flex:0 0 300px;min-width:0;position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);
+  max-height:calc(100vh - 76px);overflow-y:auto;padding:24px 16px 48px}
+.rail .eyebrow{font-family:var(--sans);font-size:calc(11.5px*var(--fs));letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 12px 11px}
+.crow{display:flex;gap:12px;width:100%;background:none;border:none;text-align:left;
+  padding:11px;cursor:pointer;border-radius:10px;font-family:var(--sans);
+  color:var(--ink-2);line-height:1.34;align-items:baseline}
+.crow:hover{background:var(--rail-hi)}
+.crow .num{font-family:var(--sans);font-size:calc(12px*var(--fs));color:var(--muted);
+  font-variant-numeric:tabular-nums;flex:0 0 auto;min-width:18px;font-weight:600}
+.crow .tt{font-size:calc(15px*var(--fs));font-weight:500}
+.crow .er{display:block;font-size:calc(12px*var(--fs));color:var(--muted);margin-top:2px;font-weight:400}
+.crow[aria-current="true"]{background:var(--g-jade);color:#fff}
+.crow[aria-current="true"] .num,.crow[aria-current="true"] .er{color:var(--gold)}
+
+main{flex:1 1 auto;min-width:0;padding:28px 24px 90px;max-width:780px}
+
+.hero{border:1px solid var(--rule);border-radius:16px;background:var(--paper);
+  padding:0 0 24px;margin-bottom:28px;box-shadow:var(--shadow);overflow:hidden}
+.hero .band{height:6px;background:var(--g-bar)}
+.hero .inner{padding:22px 26px 0}
+.kicker{font-family:var(--sans);font-size:calc(12px*var(--fs));letter-spacing:.17em;
+  text-transform:uppercase;color:var(--brass);font-weight:700;margin-bottom:10px}
+.hero h2{font-family:var(--sans);font-size:calc(34px*var(--fs));margin:0 0 10px;font-weight:700;
+  letter-spacing:-.02em;line-height:1.16;text-wrap:balance}
+.hero .dek{font-size:calc(18px*var(--fs));color:var(--ink-2);margin:0 0 16px;line-height:1.6}
+.hero .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{font-family:var(--sans);font-size:calc(12.5px*var(--fs));background:var(--chip);
+  color:var(--chip-fg);padding:5px 12px;border-radius:7px;font-weight:600}
+.pill.g{background:var(--gs-bg);color:var(--gs-fg)}
+.srcnote{margin:16px 26px 0;padding:13px 16px;border-left:3px solid var(--brass);
+  background:var(--g-hadith);border-radius:0 8px 8px 0;font-size:calc(14.5px*var(--fs));
+  color:var(--ink-2);line-height:1.62}
+
+.chap{margin-bottom:12px}
+.chap .head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.chap .n{font-family:var(--sans);font-size:calc(13px*var(--fs));font-weight:700;
+  color:#fff;background:var(--g-jade);border-radius:7px;padding:4px 11px;flex:0 0 auto}
+.chap h2{font-family:var(--sans);font-size:calc(30px*var(--fs));margin:0;font-weight:700;
+  letter-spacing:-.02em;line-height:1.18;text-wrap:balance}
+.chap .era{font-family:var(--sans);font-size:calc(13.5px*var(--fs));color:var(--muted);
+  font-weight:500;letter-spacing:.04em;margin:0 0 20px 0}
+.chap .rule{height:2px;background:var(--g-accent);opacity:.5;border-radius:2px;margin:0 0 22px}
+
+.sec{margin-bottom:34px}
+.sec h3{font-family:var(--sans);font-size:calc(22px*var(--fs));margin:0 0 14px;font-weight:600;
+  letter-spacing:-.01em;line-height:1.3;text-wrap:balance}
+.sec p{font-size:calc(19px*var(--fs));line-height:1.8;margin:0 0 17px;color:var(--ink)}
+.sec p em{font-style:italic;color:var(--ink-2)}
+
+.hadith{background:var(--g-hadith),var(--paper);border:1px solid var(--rule);
+  border-radius:14px;padding:20px 22px 17px;margin:22px 0;position:relative;overflow:hidden}
+.hadith::before{content:'';position:absolute;inset:0 auto 0 0;width:5px;background:var(--g-jade)}
+.hadith .label{display:flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:calc(11.5px*var(--fs));letter-spacing:.14em;text-transform:uppercase;
+  color:var(--jade);font-weight:700;margin-bottom:11px}
+.hadith .q{font-size:calc(18px*var(--fs));line-height:1.76;color:var(--ink);font-style:italic}
+.hadith .cite{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:15px;
+  padding-top:13px;border-top:1px solid var(--rule)}
+.hadith .ref{font-family:var(--sans);font-size:calc(13.5px*var(--fs));font-weight:600;
+  color:var(--ink-2)}
+.hadith .bk{font-family:var(--sans);font-size:calc(12.5px*var(--fs));color:var(--muted)}
+.hadith .gr{font-family:var(--sans);font-size:calc(12.5px*var(--fs));background:var(--gs-bg);
+  color:var(--gs-fg);padding:4px 11px;border-radius:7px;font-weight:600}
+.hadith .vf{font-family:var(--sans);font-size:calc(12.5px*var(--fs));color:var(--brass);
+  text-decoration:none;font-weight:600;border-bottom:1.5px solid;margin-left:auto}
+
+.nav{display:flex;gap:12px;flex-wrap:wrap;margin-top:40px;padding-top:26px;
+  border-top:1px solid var(--rule)}
+.nav button{flex:1 1 200px;min-height:60px;background:var(--paper);border:1px solid var(--rule);
+  border-radius:12px;padding:13px 17px;cursor:pointer;text-align:left;font-family:var(--sans);
+  color:var(--ink);box-shadow:var(--shadow)}
+.nav button:hover{border-color:var(--brass)}
+.nav button[disabled]{opacity:.4;cursor:default}
+.nav .dir{display:block;font-size:calc(11.5px*var(--fs));letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:3px}
+.nav .lb{display:block;font-size:calc(16px*var(--fs));font-weight:600}
+.nav .next{text-align:right}
+
+.load{padding:80px 12px;text-align:center;color:var(--muted);font-family:var(--sans);
+  font-size:calc(16px*var(--fs))}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+@media (max-width:980px){
+  .rail{position:fixed;top:calc(env(safe-area-inset-top,0px) + 76px);left:0;bottom:0;width:300px;
+    background:var(--g-page),var(--ground);z-index:35;transform:translateX(-102%);
+    transition:transform .2s ease;box-shadow:8px 0 26px rgba(0,0,0,.24);border-right:1px solid var(--rule)}
+  .rail[data-open="1"]{transform:translateX(0)}
+  .railbtn{display:block}
+  .brand .sub{display:none}
+  main{padding:20px 16px 70px}
+  .size{display:none}
+  .hero .inner,.srcnote{padding-left:18px;padding-right:18px}
+  .srcnote{margin-left:18px;margin-right:18px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="bar"><div class="row">
+  <button class="railbtn" id="railbtn" aria-label="Show chapters">☰ Chapters</button>
+  <div class="brand">
+    <span class="star"></span>
+    <div>
+      <h1>Hadith Articles</h1>
+      <div class="sub">READ THE SOURCES AS A STORY</div>
+    </div>
+  </div>
+  <span class="spacer"></span>
+  <div class="size" role="group" aria-label="Text size">
+    <span>TEXT</span>
+    <button id="fsdn" aria-label="Smaller text">A</button>
+    <button id="fsup" aria-label="Larger text">A</button>
+  </div>
+</div></div>
+
+<div class="wrap">
+  <nav class="rail" id="rail" data-open="0" aria-label="Chapters"></nav>
+  <main id="main"><div class="load">Loading the article…</div></main>
+</div>
+
+<script>
+const STEPS=[0.92,1,1.12,1.26,1.42];
+let A=null, ci=0, fsi=1;
+
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+// *word* → emphasis, applied after escaping so no markup can be injected
+function em(s){return esc(s).replace(/\*([^*]+)\*/g,'<em>$1</em>');}
+
+function applyFs(){
+  document.documentElement.style.setProperty('--fs',String(STEPS[fsi]));
+  document.getElementById('fsdn').disabled=fsi===0;
+  document.getElementById('fsup').disabled=fsi===STEPS.length-1;
+}
+
+function buildRail(){
+  const r=document.getElementById('rail');
+  r.innerHTML='<p class="eyebrow">'+esc(A.kicker||'Chapters')+'</p>'+
+    A.chapters.map((c,i)=>
+      `<button class="crow" data-i="${i}" aria-current="${i===ci}">
+         <span class="num">${c.n}</span>
+         <span><span class="tt">${esc(c.title)}</span><span class="er">${esc(c.era)}</span></span>
+       </button>`).join('');
+}
+
+function hadithHtml(h){
+  const url='https://sunnah.com/search?q='+encodeURIComponent(h.verify||h.text.slice(0,60));
+  return `<figure class="hadith">
+    <figcaption class="label"><span class="star"></span>Narration</figcaption>
+    <div class="q">${esc(h.text)}</div>
+    <div class="cite">
+      <span class="ref">${esc(h.src)} no. ${h.n}</span>
+      <span class="bk">${esc(h.book)}</span>
+      <span class="gr">${esc(h.grade)}</span>
+      <a class="vf" href="${url}" target="_blank" rel="noopener">verify ↗</a>
+    </div></figure>`;
+}
+
+function render(){
+  const c=A.chapters[ci], m=document.getElementById('main');
+  let html='';
+  if(ci===0){
+    html+=`<header class="hero">
+      <div class="band"></div>
+      <div class="inner">
+        <p class="kicker">${esc(A.kicker)}</p>
+        <h2>${esc(A.title)}</h2>
+        <p class="dek">${esc(A.subtitle)}</p>
+        <div class="meta">
+          <span class="pill">${A.chapters.length} chapters</span>
+          <span class="pill">${esc(A.readingTime)}</span>
+          <span class="pill g">Authentic narrations only</span>
+        </div>
+      </div>
+      <p class="srcnote">${esc(A.sourceNote)}</p>
+    </header>`;
+  }
+  html+=`<article class="chap">
+    <div class="head"><span class="n">${c.n}</span><h2>${esc(c.title)}</h2></div>
+    <p class="era">${esc(c.era)}</p>
+    <div class="rule"></div>`;
+  c.sections.forEach(s=>{
+    html+=`<section class="sec"><h3>${esc(s.heading)}</h3>`;
+    html+=s.paras.map(p=>`<p>${em(p)}</p>`).join('');
+    html+=(s.hadith||[]).map(hadithHtml).join('');
+    html+='</section>';
+  });
+  html+='</article>';
+
+  const prev=A.chapters[ci-1], next=A.chapters[ci+1];
+  html+=`<nav class="nav">
+    <button id="prev" ${prev?'':'disabled'}>
+      <span class="dir">Previous</span>
+      <span class="lb">${prev?esc(prev.title):'Start of series'}</span></button>
+    <button id="next" class="next" ${next?'':'disabled'}>
+      <span class="dir">Next</span>
+      <span class="lb">${next?esc(next.title):'End of series'}</span></button>
+  </nav>`;
+
+  m.innerHTML=html;
+  const p=document.getElementById('prev'), n=document.getElementById('next');
+  if(prev) p.addEventListener('click',()=>go(ci-1));
+  if(next) n.addEventListener('click',()=>go(ci+1));
+  document.querySelectorAll('.crow').forEach(b=>
+    b.setAttribute('aria-current',String(+b.dataset.i===ci)));
+}
+
+function go(i){
+  ci=i; document.getElementById('rail').dataset.open='0';
+  render(); window.scrollTo({top:0});
+}
+
+document.getElementById('rail').addEventListener('click',e=>{
+  const b=e.target.closest('.crow'); if(!b) return; go(+b.dataset.i);
+});
+document.getElementById('railbtn').addEventListener('click',()=>{
+  const r=document.getElementById('rail');
+  r.dataset.open=r.dataset.open==='1'?'0':'1';
+});
+document.getElementById('fsup').addEventListener('click',()=>{if(fsi<STEPS.length-1){fsi++;applyFs();}});
+document.getElementById('fsdn').addEventListener('click',()=>{if(fsi>0){fsi--;applyFs();}});
+
+applyFs();
+fetch('sira-prophet-life.json').then(r=>{
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
+}).then(d=>{A=d; buildRail(); render();}).catch(err=>{
+  const local=location.protocol==='file:';
+  document.getElementById('main').innerHTML='<div class="load">'+
+    (local
+      ? 'Browsers block data files when a page is opened straight from disk.<br><br>'+
+        'Serve the folder instead — run <code>python3 -m http.server 8000</code> in the '+
+        'repository root, then open <code>http://localhost:8000/articles/</code>.'
+      : 'The article could not be loaded ('+esc(err.message)+'). Reload to try again.')+
+    '</div>';
+});
+</script>

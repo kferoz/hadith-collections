@@ -124,8 +124,10 @@ python3 scripts/build_app_data.py --standalone   # writes app/hadith_library_sta
 
 The app reads 20,603 narrations, filterable by topic, collection and grade, with a
 text-size control for comfortable reading at any age. The **Browse / Articles**
-switch in the header moves between the narration index, the narrators who
-transmitted it, and the narrative series.
+menu bar carries three sections — **Hadith Library**, **Narrators** and
+**Articles** — and each has its own search: narrations by text, narrator, book
+or topic; narrators by name, era, place or topic; articles by chapter text and
+quoted narrations. Each section remembers its own query.
 
 ### Narrators
 

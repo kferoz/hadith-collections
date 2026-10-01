@@ -185,9 +185,25 @@ No localStorage. The only external request is the Google Fonts stylesheet for
 Literata and Outfit; both have full fallback stacks, so the page degrades cleanly
 offline.
 
+**Three sections, three searches.** The header is identity row, then a menu bar
+(Hadith Library / Narrators / Articles, each showing its live count), then a
+tools row. **Each section keeps its own query in `Q = {lib, nar, art}`** — the
+single search box swaps its value and placeholder on section change, so a
+library search survives a trip to Articles and back. Library-only controls
+(collection, grade, tally) hide outside the library; the search box never does.
+
 Topic rail grouped into 8 thematic groups; collection dropdown; grade filter
 (All / Ṣaḥīḥ / +Ḥasan / Weak only). Paginate at 25 — rendering 20k cards at once
-will hang the browser.
+will hang the browser. Narrator search covers name, Arabic name, era, place,
+topics and death year. Article search runs over chapter text and quoted
+narrations, fetching any unopened article once on first search, and a hit opens
+that chapter directly.
+
+**When editing the header, check the selectors actually in the file.** Two
+rewrites in a row silently no-opped because the live markup used `aria-current`
+where the patch assumed `aria-pressed`: the CSS block and `syncChrome` were both
+left untouched, the app still worked, and only a browser check caught the dead
+menu styling and a search box stuck hidden.
 
 **Readability is a requirement, not a preference.** The audience spans all ages.
 Hadith body text sits at 19px in Literata (a face designed for long-form reading)

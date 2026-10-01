@@ -1,7 +1,8 @@
 <title>Hadith Library</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,ital,wght@7..72,0,400;7..72,0,500;7..72,0,600;7..72,1,400&family=Outfit:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: one app, two modes. A gradient filter bar carries the mode switch;
+/* Layout: one app, three sections. A gradient bar carries identity, a menu row,
+   and a tools row whose search belongs to whichever section is open;
    below it a rail (topics when browsing, chapters when reading) sits beside the
    content column. Palette from manuscript illumination — lapis, jade, gold leaf
    — kept on the chrome and the narration cards, never behind running text.
@@ -79,20 +80,29 @@ button,select,input{font-family:inherit}
 /* ---------- bar ---------- */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--g-bar);
   color:var(--bar-fg);box-shadow:0 2px 18px rgba(0,0,0,.2)}
-.bar::after{content:'';display:block;height:4px;background:var(--g-accent)}
 .bar .row{max-width:1420px;margin:0 auto;padding:13px 22px;
   display:flex;gap:13px;align-items:center;flex-wrap:wrap}
+.bar::after{content:'';display:block;height:4px;background:var(--g-accent)}
 .brand{display:flex;align-items:center;gap:11px;flex:0 0 auto}
 .brand h1{font-family:var(--sans);font-size:calc(19px*var(--fs));letter-spacing:.11em;
   text-transform:uppercase;margin:0;font-weight:600;line-height:1.2}
 .brand .sub{font-family:var(--sans);font-size:calc(11.5px*var(--fs));color:var(--bar-sub);
   letter-spacing:.14em;margin-top:3px;font-weight:500}
-.modes{display:flex;flex:0 0 auto;border:1.5px solid var(--bar-edge);border-radius:10px;overflow:hidden}
-.modes button{background:var(--bar-in);border:none;color:var(--bar-fg);font-family:var(--sans);
-  font-size:calc(14.5px*var(--fs));padding:11px 18px;cursor:pointer;font-weight:600;min-height:44px}
-.modes button+button{border-left:1.5px solid var(--bar-edge)}
-.modes button[aria-pressed="true"]{background:var(--g-accent);color:#1d1403}
-#q{flex:1 1 220px;min-width:130px;max-width:380px;background:var(--bar-in);
+.bar .row.top{padding-bottom:6px}
+.bar .row.tools{padding-top:12px;padding-bottom:14px}
+.menu{max-width:1420px;margin:0 auto;padding:0 22px;display:flex;gap:6px;flex-wrap:wrap;
+  border-bottom:1px solid var(--bar-edge)}
+.menu button{background:none;border:none;border-bottom:3px solid transparent;color:var(--bar-sub);
+  font-family:var(--sans);padding:11px 18px 10px;cursor:pointer;display:flex;align-items:baseline;
+  gap:10px;min-height:48px;border-radius:10px 10px 0 0;margin-bottom:-1px}
+.menu button:hover{color:var(--bar-fg);background:var(--bar-in)}
+.menu .mt{font-size:calc(16.5px*var(--fs));font-weight:600;letter-spacing:.01em;white-space:nowrap}
+.menu .ms{font-size:calc(12.5px*var(--fs));font-weight:600;opacity:.7;
+  font-variant-numeric:tabular-nums}
+.menu button[aria-current="true"]{color:var(--gold);border-bottom-color:var(--gold);
+  background:var(--bar-in)}
+.menu button[aria-current="true"] .ms{opacity:.95}
+#q{flex:1 1 300px;min-width:160px;max-width:520px;background:var(--bar-in);
   border:1.5px solid var(--bar-edge);color:var(--bar-fg);padding:11px 15px;border-radius:9px;
   font-family:var(--sans);font-size:calc(15px*var(--fs));outline:none}
 #q:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,169,74,.32)}
@@ -123,8 +133,8 @@ button,select,input{font-family:inherit}
 /* ---------- shell ---------- */
 .wrap{max-width:1420px;margin:0 auto;display:flex;align-items:flex-start}
 .rail{flex:0 0 292px;min-width:0;position:sticky;
-  top:calc(env(safe-area-inset-top,0px) + 76px);
-  max-height:calc(100vh - 76px);overflow-y:auto;padding:22px 16px 48px}
+  top:calc(env(safe-area-inset-top,0px) + 172px);
+  max-height:calc(100vh - 172px);overflow-y:auto;padding:22px 16px 48px}
 .rail h2{font-family:var(--sans);font-size:calc(12px*var(--fs));letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin:22px 0 8px;font-weight:600}
 .rail h2:first-of-type{margin-top:0}
@@ -252,6 +262,8 @@ main.read{max-width:800px}
   box-shadow:var(--shadow);overflow:hidden;cursor:pointer;text-align:left;
   padding:0 0 22px;width:100%;font-family:inherit;color:inherit;border-width:1px}
 .acard:hover{border-color:var(--brass)}
+.acard.hit .dek{font-size:calc(15.5px*var(--fs));color:var(--muted);line-height:1.55}
+.acard.hit h3{font-size:calc(23px*var(--fs))}
 .acard .band{height:6px;background:var(--g-bar)}
 .acard .inner{padding:20px 24px 0}
 .kicker{font-family:var(--sans);font-size:calc(12px*var(--fs));letter-spacing:.17em;
@@ -308,7 +320,7 @@ main.read{max-width:800px}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
 
 @media (max-width:920px){
-  .rail{position:fixed;top:calc(env(safe-area-inset-top,0px) + 76px);left:0;bottom:0;width:296px;
+  .rail{position:fixed;top:calc(env(safe-area-inset-top,0px) + 196px);left:0;bottom:0;width:296px;
     background:var(--g-page),var(--ground);z-index:35;transform:translateX(-102%);
     transition:transform .2s ease;box-shadow:8px 0 26px rgba(0,0,0,.24);border-right:1px solid var(--rule)}
   .rail[data-open="1"]{transform:translateX(0)}
@@ -317,36 +329,45 @@ main.read{max-width:800px}
   main{padding:18px 16px 64px}
   .card{padding:17px 17px 15px}
   .size{display:none}
+  .menu{padding:0 12px;gap:2px}
+  .menu button{padding:9px 11px 8px}
+  .menu .mt{font-size:calc(14.5px*var(--fs))}
+  .bar .row{padding:11px 16px}
   .acard .inner{padding-left:18px;padding-right:18px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
-<div class="bar"><div class="row">
-  <button class="railbtn" id="railbtn" aria-label="Show sidebar">☰</button>
-  <div class="brand">
-    <span class="star"></span>
-    <div>
-      <h1>Hadith Library</h1>
-      <div class="sub">BROWSE THE SOURCES · READ THE STORY</div>
+<div class="bar">
+  <div class="row top">
+    <button class="railbtn" id="railbtn" aria-label="Show sidebar">☰</button>
+    <div class="brand">
+      <span class="star"></span>
+      <div>
+        <h1>Hadith Library</h1>
+        <div class="sub">SOURCES · NARRATORS · ARTICLES</div>
+      </div>
+    </div>
+    <span class="spacer"></span>
+    <div class="size" role="group" aria-label="Text size">
+      <span>TEXT</span>
+      <button id="fsdn" aria-label="Smaller text">A</button>
+      <button id="fsup" aria-label="Larger text">A</button>
     </div>
   </div>
-  <div class="modes" id="modes" role="group" aria-label="View">
-    <button data-m="lib" aria-pressed="true">Browse</button><button data-m="nar" aria-pressed="false">Narrators</button><button data-m="art" aria-pressed="false">Articles</button>
+  <nav class="menu" id="modes" aria-label="Sections">
+    <button data-m="lib" aria-current="true"><span class="mt">Hadith Library</span><span class="ms" id="m-lib">20,603</span></button><button data-m="nar" aria-current="false"><span class="mt">Narrators</span><span class="ms" id="m-nar">—</span></button><button data-m="art" aria-current="false"><span class="mt">Articles</span><span class="ms" id="m-art">—</span></button>
+  </nav>
+  <div class="row tools">
+    <input id="q" type="search" placeholder="Search narrations…" aria-label="Search">
+    <select id="col" aria-label="Collection"></select>
+    <div class="seg" id="seg" role="group" aria-label="Authenticity grade">
+      <button data-g="ALL" aria-pressed="true">All grades</button><button data-g="SH" aria-pressed="false">Ṣaḥīḥ</button><button data-g="SHH" aria-pressed="false">+ Ḥasan</button><button data-g="WK" aria-pressed="false">Weak</button>
+    </div>
+    <span class="spacer"></span>
+    <span class="tally" id="tally"></span>
   </div>
-  <input id="q" type="search" placeholder="Search narrations…" aria-label="Search narrations">
-  <select id="col" aria-label="Collection"></select>
-  <div class="seg" id="seg" role="group" aria-label="Authenticity grade">
-    <button data-g="ALL" aria-pressed="true">All grades</button><button data-g="SH" aria-pressed="false">Ṣaḥīḥ</button><button data-g="SHH" aria-pressed="false">+ Ḥasan</button><button data-g="WK" aria-pressed="false">Weak</button>
-  </div>
-  <span class="spacer"></span>
-  <div class="size" role="group" aria-label="Text size">
-    <span>TEXT</span>
-    <button id="fsdn" aria-label="Smaller text">A</button>
-    <button id="fsup" aria-label="Larger text">A</button>
-  </div>
-  <span class="tally" id="tally"></span>
-</div></div>
+</div>
 
 <div class="wrap">
   <nav class="rail" id="rail" data-open="0" aria-label="Sidebar"></nav>
@@ -373,10 +394,17 @@ const PAGE=25, STEPS=[0.92,1,1.12,1.26,1.42];
 
 /* ---------- state ---------- */
 let mode='lib', fsi=1;
-let D=null, dataErr=null, COUNT={}, topic=null, query='', source='A', grade='ALL',
+let D=null, dataErr=null, COUNT={}, topic=null, source='A', grade='ALL',
     shown=0, matches=[];
 let MAN=null, ART=null, ai=null, ci=0;   // manifest, open article, its index, chapter
 let NAR=null, NMAP=null, narFilter=null; // narrators, raw-name -> key, active filter
+// Each section keeps its own query, so switching menus does not clobber a search.
+const Q={lib:'',nar:'',art:''};
+const PLACEHOLDER={lib:'Search narrations, narrators, books, topics…',
+                   nar:'Search narrators by name, era or topic…',
+                   art:'Search the articles — chapters, text, narrations…'};
+let ARTS={};   // slug -> loaded article, for cross-article search
+function query(){ return Q[mode]; }
 
 /* ---------- helpers ---------- */
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -411,10 +439,21 @@ function applyFs(){
 // Library-only controls are irrelevant while reading, so hide rather than disable.
 function syncChrome(){
   const lib=mode==='lib';
-  ['q','col','seg','tally'].forEach(id=>{document.getElementById(id).hidden=!lib;});
+  // Search is present in every section; only the library's own filters are not.
+  ['col','seg','tally'].forEach(id=>{document.getElementById(id).hidden=!lib;});
+  const qi=document.getElementById('q');
+  qi.hidden=false;
+  qi.placeholder=PLACEHOLDER[mode];
+  if(qi.value!==Q[mode]) qi.value=Q[mode];
   document.getElementById('main').className=(mode==='art')?'read':'';
   document.querySelectorAll('#modes button').forEach(b=>
-    b.setAttribute('aria-pressed',String(b.dataset.m===mode)));
+    b.setAttribute('aria-current',String(b.dataset.m===mode)));
+  const counts={lib:D?D.length:null, nar:NAR?NAR.length:null,
+                art:MAN?MAN.articles.length:null};
+  for(const k of ['lib','nar','art']){
+    const el=document.getElementById('m-'+k);
+    if(el) el.textContent=counts[k]==null?'…':counts[k].toLocaleString();
+  }
 }
 
 /* ---------- rail ---------- */
@@ -466,7 +505,7 @@ function buildRail(){
 
 /* ---------- library view ---------- */
 function recompute(){
-  const ql=query.trim().toLowerCase();
+  const ql=Q.lib.trim().toLowerCase();
   matches=pool().filter(h=>{
     if(topic&&!h.t.includes(topic)) return false;
     if(!ql) return true;
@@ -605,7 +644,7 @@ function openArticle(i){
   fetch('articles/'+entry.file).then(r=>{
     if(!r.ok) throw new Error('HTTP '+r.status);
     return r.json();
-  }).then(d=>{ ART=d; ci=0; buildRail(); renderArt(); window.scrollTo({top:0}); })
+  }).then(d=>{ ARTS[entry.file]=d; ART=d; ci=0; buildRail(); renderArt(); window.scrollTo({top:0}); })
    .catch(e=>{document.getElementById('main').innerHTML=
      '<div class="none">That article could not be loaded ('+esc(e.message)+').</div>';});
 }
@@ -623,10 +662,22 @@ const BANDS=[
   [111,180,'The Successors','111–180 AH'],
   [181,320,'The generation of the compilers','181–320 AH'],
 ];
+function narMatches(){
+  const q=Q.nar.trim().toLowerCase();
+  if(!q) return NAR||[];
+  return (NAR||[]).filter(r=>
+    r.name.toLowerCase().includes(q) ||
+    (r.ar||'').includes(Q.nar.trim()) ||
+    (r.gen||'').toLowerCase().includes(q) ||
+    (r.place||'').toLowerCase().includes(q) ||
+    (r.topics||[]).some(t=>t.toLowerCase().includes(q)) ||
+    (r.variants||[]).some(v=>v.toLowerCase().includes(q)) ||
+    (r.death_h!=null && String(r.death_h).includes(q)));
+}
 function eraBands(){
   const out=BANDS.map(([lo,hi,label,yr])=>({lo,hi,label,yr,rows:[]}));
   const undated={label:'Date not established',yr:'—',rows:[]};
-  (NAR||[]).forEach(r=>{
+  narMatches().forEach(r=>{
     if(r.death_h==null){ undated.rows.push(r); return; }
     const b=out.find(x=>r.death_h>=x.lo&&r.death_h<=x.hi);
     (b||undated).rows.push(r);
@@ -658,6 +709,18 @@ function renderNar(){
   if(!NAR){ m.innerHTML='<div class="load">Loading the narrators…</div>'; return; }
   const bands=eraBands();
   const dated=NAR.filter(r=>r.death_h!=null).length;
+  const hits=narMatches();
+  if(Q.nar.trim()){
+    m.innerHTML=`<div class="crumb"><span class="star"></span>
+        <h2>${hits.length.toLocaleString()} narrator${hits.length===1?'':'s'} matching “${esc(Q.nar.trim())}”</h2>
+        <span class="ln"></span></div>`+
+      (hits.length
+        ? bands.map(b=>`<div class="era-band"><h3>${esc(b.label)}</h3>
+            <span class="yr">${esc(b.yr)}</span><span class="ln"></span></div>
+            <div class="ngrid">${b.rows.map(ncard).join('')}</div>`).join('')
+        : '<div class="none">No narrator matches that. Try a name, an era like “Companion”, or a topic.</div>');
+    return;
+  }
   m.innerHTML=
     `<div class="note">
       <div class="hd"><span class="star"></span><strong>Who transmitted this</strong></div>
@@ -674,10 +737,62 @@ function renderNar(){
 }
 
 function showNarrator(k){
-  narFilter=k; mode='lib'; topic=null; query='';
+  narFilter=k; mode='lib'; topic=null; Q.lib='';
   const qi=document.getElementById('q'); if(qi) qi.value='';
   document.getElementById('rail').dataset.open='0';
   recount(); syncChrome(); buildRail(); recompute(); window.scrollTo({top:0});
+}
+
+// Article search runs over every loaded article; the manifest alone has no body
+// text, so any article not yet opened is fetched once on the first search.
+function artText(ch){
+  return (ch.sections||[]).map(s2=>
+    s2.heading+' — '+(s2.paras||[]).join(' ')+' '+
+    (s2.hadith||[]).map(h=>h.text+' '+h.src+' '+h.book).join(' ')).join('  ');
+}
+function artSearch(){
+  const q=Q.art.trim().toLowerCase();
+  const out=[];
+  if(!q) return out;
+  Object.values(ARTS).forEach(a=>{
+    a.chapters.forEach((ch,i)=>{
+      const hay=(ch.title+' '+ch.era+' '+(ch.blurb||'')+' '+artText(ch)).toLowerCase();
+      const at=hay.indexOf(q);
+      if(at<0) return;
+      const raw=artText(ch);
+      const lo=Math.max(0,raw.toLowerCase().indexOf(q)-80);
+      out.push({a,ch,i,snippet:(lo>0?'…':'')+raw.slice(lo,lo+230)+'…'});
+    });
+  });
+  return out;
+}
+function ensureArticlesLoaded(then){
+  if(!MAN) return then();
+  const missing=MAN.articles.filter(e=>!ARTS[e.file]);
+  if(!missing.length) return then();
+  Promise.all(missing.map(e=>fetch('articles/'+e.file)
+    .then(r=>r.ok?r.json():null).then(d=>{if(d) ARTS[e.file]=d;}).catch(()=>{})))
+    .then(then);
+}
+function renderArtSearch(){
+  const m=document.getElementById('main');
+  const hits=artSearch();
+  const q=esc(Q.art.trim());
+  m.innerHTML=`<div class="crumb"><span class="star"></span>
+      <h2>${hits.length} chapter${hits.length===1?'':'s'} matching “${q}”</h2>
+      <span class="ln"></span></div>`+
+    (hits.length
+      ? '<div class="alist">'+hits.map((h,j)=>
+          `<button class="acard hit" data-hit="${j}">
+             <div class="band"></div>
+             <div class="inner">
+               <p class="kicker">${esc(h.a.title)} · Chapter ${h.ch.n}</p>
+               <h3>${esc(h.ch.title)}</h3>
+               <p class="dek">${esc(h.snippet)}</p>
+               <div class="meta"><span class="pill">${esc(h.ch.era)}</span></div>
+             </div></button>`).join('')+'</div>'
+      : '<div class="none">Nothing in the articles matches that. Try a name, a place, or a word from a narration.</div>');
+  window.__artHits=hits;
 }
 
 /* ---------- routing ---------- */
@@ -685,6 +800,7 @@ function render(){
   syncChrome();
   if(mode==='lib') renderLib();
   else if(mode==='nar') renderNar();
+  else if(Q.art.trim()){ ensureArticlesLoaded(renderArtSearch); }
   else if(ART) renderArt();
   else renderArtList();
 }
@@ -722,10 +838,18 @@ document.getElementById('main').addEventListener('click',e=>{
   if(n){ showNarrator(n.dataset.k); return; }
   const cl=e.target.closest('#clearnar');
   if(cl){ narFilter=null; recount(); buildRail(); recompute(); window.scrollTo({top:0}); return; }
+  const hit=e.target.closest('.acard[data-hit]');
+  if(hit){
+    const h=(window.__artHits||[])[+hit.dataset.hit];
+    if(h){ ART=h.a; ai=(MAN.articles.findIndex(x=>x.id===h.a.id)); ci=h.i;
+           Q.art=''; document.getElementById('q').value='';
+           buildRail(); renderArt(); window.scrollTo({top:0}); }
+    return;
+  }
   const a=e.target.closest('.acard');
   if(a){ openArticle(+a.dataset.a); return; }
   const b=e.target.closest('.tg'); if(!b) return;
-  topic=b.dataset.t; query=''; document.getElementById('q').value='';
+  topic=b.dataset.t; Q.lib=''; document.getElementById('q').value='';
   buildRail(); recompute(); window.scrollTo({top:0});
 });
 document.getElementById('col').addEventListener('change',e=>{
@@ -745,8 +869,14 @@ document.getElementById('fsup').addEventListener('click',()=>{if(fsi<STEPS.lengt
 document.getElementById('fsdn').addEventListener('click',()=>{if(fsi>0){fsi--;applyFs();}});
 let timer;
 document.getElementById('q').addEventListener('input',e=>{
-  clearTimeout(timer); const v=e.target.value;
-  timer=setTimeout(()=>{query=v; recompute();},170);
+  clearTimeout(timer); const v=e.target.value, m=mode;
+  timer=setTimeout(()=>{
+    Q[m]=v;
+    if(m==='lib') recompute();
+    else if(m==='nar'){ buildRail(); renderNar(); }
+    else { if(Q.art.trim()) ensureArticlesLoaded(renderArtSearch);
+           else if(ART) renderArt(); else renderArtList(); }
+  },170);
 });
 document.getElementById('railbtn').addEventListener('click',()=>{
   const r=document.getElementById('rail');
@@ -776,13 +906,13 @@ fetch('narrators.json').then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r
     NAR=d.narrators;
     NMAP=new Map();
     NAR.forEach(r=>(r.raw||[]).forEach(v=>NMAP.set(v,r.key)));
-    if(mode==='nar'){ buildRail(); render(); }
+    syncChrome(); if(mode==='nar'){ buildRail(); render(); }
   })
-  .catch(()=>{ NAR=[]; NMAP=new Map(); if(mode==='nar'){ buildRail(); render(); } });
+  .catch(()=>{ NAR=[]; NMAP=new Map(); syncChrome(); if(mode==='nar'){ buildRail(); render(); } });
 
 fetch('articles/manifest.json').then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r.status)))
-  .then(d=>{ MAN=d; if(mode==='art') { buildRail(); render(); } })
-  .catch(()=>{ MAN={articles:[]}; if(mode==='art'){ buildRail(); render(); } });
+  .then(d=>{ MAN=d; syncChrome(); if(mode==='art') { buildRail(); render(); } })
+  .catch(()=>{ MAN={articles:[]}; syncChrome(); if(mode==='art'){ buildRail(); render(); } });
 
 fetch('hadith.json').then(r=>{
   if(!r.ok) throw new Error('HTTP '+r.status);
@@ -793,7 +923,7 @@ fetch('hadith.json').then(r=>{
   document.getElementById('col').innerHTML=
     `<option value="A">All collections (${D.length.toLocaleString()})</option>`+
     ORDER.map(k=>`<option value="${k}">${NAMES[k]} (${(cnt[k]||0).toLocaleString()})</option>`).join('');
-  recount(); buildRail();
+  recount(); buildRail(); syncChrome();
   if(mode==='lib') recompute();
 }).catch(err=>{
   dataErr=loadFailure(err);

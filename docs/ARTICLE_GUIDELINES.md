@@ -100,7 +100,8 @@ Narrative, not devotional and not academic. What earns the reader's attention:
 
 ## Design
 
-The reader inherits the library app's system, so the two read as one product:
+Articles are a mode inside the library app, not a separate page, so they share
+its system exactly:
 
 - **Type first.** Body text 19px Literata, line-height 1.8, measure about 68
   characters. Every `font-size` written `calc(Npx * var(--fs))` so the TEXT A/A
@@ -112,7 +113,9 @@ The reader inherits the library app's system, so the two read as one product:
   edge, italic — and always carry collection, number, book, grade badge and a
   wording-based verify link.
 - **Chapter rail** with era labels, plus previous/next at the foot of each
-  chapter. Both themes. No localStorage.
+  chapter. The rail shows topics while browsing and chapters while reading, and
+  carries an "All series" link back to the article list. Both themes. No
+  localStorage.
 
 ---
 
@@ -125,8 +128,10 @@ The reader inherits the library app's system, so the two read as one product:
 2. Write `articles/<slug>.src.json`: chapters → sections → `paras` + `hadith`
    refs. Prose in `paras`, `*word*` for emphasis.
 3. `python3 scripts/build_articles.py --check` until it passes.
-4. `python3 scripts/build_articles.py` to write the published JSON.
-5. Add the article to the reader's list and commit both source and build.
+4. `python3 scripts/build_articles.py` to write `app/articles/<slug>.json` and
+   refresh `app/articles/manifest.json`.
+5. Commit the source and the build. **No app code changes** — the app lists
+   whatever the manifest holds.
 
 If a chapter cannot be supported by authentic narrations, that is a finding
 about the sources, not a problem to write around.

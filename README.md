@@ -87,9 +87,9 @@ Fifteen collections beyond the Nine Books, extracted from
 ## Layout
 
 ```
-app/index.html                Browsable app — topic rail, grade filter, search
+app/index.html                The app — browse narrations, or read the articles
 app/hadith.json               Its data, built from data/english-graded/
-articles/index.html           Article reader — narrative series built on the data
+app/articles/                 Built articles + manifest the app fetches
 articles/*.src.json           Article sources (hadith by reference, never by text)
 data/english-graded/          Tier 1, CSV + JSON
 data/arabic-ungraded/         Tier 2a, CSV + JSON
@@ -121,14 +121,14 @@ python3 scripts/build_app_data.py --standalone   # writes app/hadith_library_sta
 ```
 
 The app reads 20,603 narrations, filterable by topic, collection and grade, with a
-text-size control for comfortable reading at any age. The reader at
-`http://localhost:8000/articles/` carries the narrative series.
+text-size control for comfortable reading at any age. The **Browse / Articles**
+switch in the header moves between the narration index and the narrative series.
 
 ### Articles
 
-`articles/` holds long-form series built on this dataset. The first is **The Life
-of the Prophet ﷺ** — twelve chapters, birth to death, quoting only narrations
-graded authentic.
+Articles are a mode inside the app, not a separate page. The first series is
+**The Life of the Prophet ﷺ** — twelve chapters, birth to death, quoting only
+narrations graded authentic.
 
 Article sources hold **references, never hadith text**:
 
@@ -137,10 +137,11 @@ Article sources hold **references, never hadith text**:
 ```
 
 `scripts/build_articles.py` resolves each one against `app/hadith.json` and
-writes the text, book and grade from the dataset. A reference that does not
-resolve — or resolves to anything not graded Ṣaḥīḥ — fails the build, so a
-quotation can be shortened but never invented. Rules for writing them are in
-`docs/ARTICLE_GUIDELINES.md`.
+writes the text, book and grade from the dataset, into `app/articles/` along
+with a manifest the app reads. A reference that does not resolve — or resolves
+to anything not graded Ṣaḥīḥ — fails the build, so a quotation can be shortened
+but never invented. Adding a series needs no app changes. Rules for writing them
+are in `docs/ARTICLE_GUIDELINES.md`.
 
 CSV columns: `collection, ref_no, grade, book_chapter, narrator, hadith_text,
 topics, also_narrated_at, verify_phrase` (Tier 1) and `collection, seq_no,

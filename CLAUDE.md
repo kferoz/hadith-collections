@@ -205,11 +205,25 @@ without knowing its grade status.
 
 ---
 
-## Articles (`articles/`)
+## Articles
 
-Narrative long-form built on the dataset, read in `articles/index.html`.
-**`docs/ARTICLE_GUIDELINES.md` is the governing document** — read it before
-writing or editing any article.
+Narrative long-form built on the dataset. **There is no separate reader** —
+articles are a mode inside `app/index.html`, reached by the Browse / Articles
+switch in the header. **`docs/ARTICLE_GUIDELINES.md` is the governing
+document** — read it before writing or editing any article.
+
+Sources are authored in `articles/*.src.json`; `scripts/build_articles.py`
+writes the built JSON plus a `manifest.json` into `app/articles/`, which is what
+the app fetches. Adding an article is dropping a `.src.json` and rebuilding —
+no app code to touch.
+
+The two payloads differ by 340× (40 KB of article against 13.7 MB of
+narrations), so the app fetches the manifest and `hadith.json` **in parallel and
+does not await between them**: Articles is usable long before the library
+finishes downloading. Keep that property — awaiting the dataset before showing
+articles would make a 40 KB read wait on a 13.7 MB one. Library-only controls
+(search, collection, grade, tally) are hidden rather than disabled while
+reading.
 
 The one thing to know before touching this: **article sources never contain
 hadith text.** They contain references — `{"ref": ["bukhari", 4457]}`, with

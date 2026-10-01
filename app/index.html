@@ -1,13 +1,13 @@
 <title>Hadith Library</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,400;7..72,500;7..72,600&family=Outfit:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Literata:opsz,ital,wght@7..72,0,400;7..72,0,500;7..72,0,600;7..72,1,400&family=Outfit:wght@400;500;600;700&display=swap">
 <style>
-/* Layout: gradient filter bar over a two-column reading view — topic rail left,
-   narration cards right, one column on a phone. Gradients come from manuscript
-   illumination (lapis blue, gold leaf, jade) and stay on the chrome; every
-   reading surface is solid paper so the text keeps full contrast.
+/* Layout: one app, two modes. A gradient filter bar carries the mode switch;
+   below it a rail (topics when browsing, chapters when reading) sits beside the
+   content column. Palette from manuscript illumination — lapis, jade, gold leaf
+   — kept on the chrome and the narration cards, never behind running text.
    Type is set large by default and the reader can raise it further. */
 :root{
-  --fs:1;                      /* reader-controlled type multiplier */
+  --fs:1;
   --paper:#fffdf8; --ground:#f6f1e6; --ink:#161d2e; --ink-2:#333c56;
   --muted:#6a7287; --rule:#e3dcc9;
   --lapis:#1e3170; --jade:#146055; --brass:#a97b2e; --gold:#d9a94a;
@@ -16,6 +16,7 @@
   --g-jade:linear-gradient(180deg,#1f7a68,#12544a);
   --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(30,49,112,.07),transparent 62%),
            radial-gradient(900px 380px at 92% 4%,rgba(169,123,46,.09),transparent 60%);
+  --g-wash:linear-gradient(135deg,rgba(30,49,112,.055),rgba(20,96,85,.05) 55%,rgba(169,123,46,.06));
   --bar-fg:#f5f1e6; --bar-sub:#a6afc6; --bar-in:rgba(255,255,255,.10);
   --bar-edge:rgba(255,255,255,.22);
   --chip:#efe9da; --chip-fg:#454d63; --rail-hi:#efe9db;
@@ -27,7 +28,6 @@
   --shadow:0 3px 16px rgba(22,29,46,.08);
   --serif:'Literata','Iowan Old Style','Palatino Linotype',Georgia,serif;
   --sans:'Outfit','Avenir Next','Segoe UI',system-ui,-apple-system,sans-serif;
-  --mono:'SF Mono',ui-monospace,Consolas,'Liberation Mono',monospace;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --paper:#1a2030; --ground:#11151f; --ink:#eee9dc; --ink-2:#c6cddd;
@@ -36,6 +36,7 @@
   --g-bar:linear-gradient(105deg,#080b13 0%,#121e45 48%,#0b3b34 100%);
   --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(83,116,224,.11),transparent 62%),
            radial-gradient(900px 380px at 92% 4%,rgba(220,176,99,.09),transparent 60%);
+  --g-wash:linear-gradient(135deg,rgba(83,116,224,.10),rgba(79,182,158,.07) 55%,rgba(220,176,99,.08));
   --bar-fg:#eee9dc; --bar-sub:#98a1b8; --bar-in:rgba(255,255,255,.08);
   --bar-edge:rgba(255,255,255,.18);
   --chip:#272e3e; --chip-fg:#bfc6d6; --rail-hi:#232a3a;
@@ -54,6 +55,7 @@
   --g-bar:linear-gradient(105deg,#080b13 0%,#121e45 48%,#0b3b34 100%);
   --g-page:radial-gradient(1100px 420px at 12% -8%,rgba(83,116,224,.11),transparent 62%),
            radial-gradient(900px 380px at 92% 4%,rgba(220,176,99,.09),transparent 60%);
+  --g-wash:linear-gradient(135deg,rgba(83,116,224,.10),rgba(79,182,158,.07) 55%,rgba(220,176,99,.08));
   --bar-fg:#eee9dc; --bar-sub:#98a1b8; --bar-in:rgba(255,255,255,.08);
   --bar-edge:rgba(255,255,255,.18);
   --chip:#272e3e; --chip-fg:#bfc6d6; --rail-hi:#232a3a;
@@ -70,12 +72,11 @@
 body{margin:0;background:var(--g-page),var(--ground);background-attachment:fixed;
   color:var(--ink);font-family:var(--serif);line-height:1.7}
 button,select,input{font-family:inherit}
-
 .star{position:relative;width:12px;height:12px;flex:0 0 auto}
 .star::before,.star::after{content:'';position:absolute;inset:0;background:var(--g-accent)}
 .star::after{transform:rotate(45deg)}
 
-/* ---------- gradient filter bar ---------- */
+/* ---------- bar ---------- */
 .bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--g-bar);
   color:var(--bar-fg);box-shadow:0 2px 18px rgba(0,0,0,.2)}
 .bar::after{content:'';display:block;height:4px;background:var(--g-accent)}
@@ -86,20 +87,26 @@ button,select,input{font-family:inherit}
   text-transform:uppercase;margin:0;font-weight:600;line-height:1.2}
 .brand .sub{font-family:var(--sans);font-size:calc(11.5px*var(--fs));color:var(--bar-sub);
   letter-spacing:.14em;margin-top:3px;font-weight:500}
-#q{flex:1 1 230px;min-width:140px;max-width:400px;background:var(--bar-in);
+.modes{display:flex;flex:0 0 auto;border:1.5px solid var(--bar-edge);border-radius:10px;overflow:hidden}
+.modes button{background:var(--bar-in);border:none;color:var(--bar-fg);font-family:var(--sans);
+  font-size:calc(14.5px*var(--fs));padding:11px 18px;cursor:pointer;font-weight:600;min-height:44px}
+.modes button+button{border-left:1.5px solid var(--bar-edge)}
+.modes button[aria-pressed="true"]{background:var(--g-accent);color:#1d1403}
+#q{flex:1 1 220px;min-width:130px;max-width:380px;background:var(--bar-in);
   border:1.5px solid var(--bar-edge);color:var(--bar-fg);padding:11px 15px;border-radius:9px;
   font-family:var(--sans);font-size:calc(15px*var(--fs));outline:none}
 #q:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,169,74,.32)}
 #q::placeholder{color:var(--bar-sub)}
 #col{background:var(--bar-in);border:1.5px solid var(--bar-edge);color:var(--bar-fg);
-  font-family:var(--sans);font-size:calc(14.5px*var(--fs));padding:11px 11px;border-radius:9px;
-  flex:0 0 auto;max-width:250px;font-weight:500}
+  font-family:var(--sans);font-size:calc(14.5px*var(--fs));padding:11px;border-radius:9px;
+  flex:0 0 auto;max-width:240px;font-weight:500}
 #col option{background:#141b2e;color:#f5f1e6}
 .seg{display:flex;flex:0 0 auto;border:1.5px solid var(--bar-edge);border-radius:9px;overflow:hidden}
 .seg button{background:var(--bar-in);border:none;color:var(--bar-fg);font-family:var(--sans);
   font-size:calc(14px*var(--fs));padding:11px 15px;cursor:pointer;font-weight:500;min-height:44px}
 .seg button+button{border-left:1.5px solid var(--bar-edge)}
 .seg button[aria-pressed="true"]{background:var(--g-accent);color:#1d1403;font-weight:700}
+.spacer{flex:1 1 auto}
 .size{display:flex;gap:4px;align-items:center;flex:0 0 auto}
 .size span{font-family:var(--sans);font-size:calc(12px*var(--fs));color:var(--bar-sub);
   letter-spacing:.06em;margin-right:2px}
@@ -115,13 +122,14 @@ button,select,input{font-family:inherit}
 
 /* ---------- shell ---------- */
 .wrap{max-width:1420px;margin:0 auto;display:flex;align-items:flex-start}
-
-.rail{flex:0 0 290px;min-width:0;position:sticky;
+.rail{flex:0 0 292px;min-width:0;position:sticky;
   top:calc(env(safe-area-inset-top,0px) + 76px);
   max-height:calc(100vh - 76px);overflow-y:auto;padding:22px 16px 48px}
 .rail h2{font-family:var(--sans);font-size:calc(12px*var(--fs));letter-spacing:.14em;
   text-transform:uppercase;color:var(--muted);margin:22px 0 8px;font-weight:600}
-.rail h2:first-of-type{margin-top:20px}
+.rail h2:first-of-type{margin-top:0}
+.rail .eyebrow{font-family:var(--sans);font-size:calc(11.5px*var(--fs));letter-spacing:.15em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 12px 11px}
 .trow{display:flex;justify-content:space-between;align-items:baseline;gap:9px;width:100%;
   background:none;border:none;text-align:left;padding:9px 11px;cursor:pointer;border-radius:8px;
   font-family:var(--sans);font-size:calc(15px*var(--fs));color:var(--ink-2);line-height:1.35;
@@ -131,9 +139,25 @@ button,select,input{font-family:inherit}
   font-variant-numeric:tabular-nums;font-weight:500}
 .trow[aria-pressed="true"]{background:var(--g-jade);color:#fff;font-weight:600}
 .trow[aria-pressed="true"] .c{color:var(--gold)}
+.crow{display:flex;gap:12px;width:100%;background:none;border:none;text-align:left;
+  padding:11px;cursor:pointer;border-radius:10px;font-family:var(--sans);
+  color:var(--ink-2);line-height:1.34;align-items:baseline}
+.crow:hover{background:var(--rail-hi)}
+.crow .num{font-family:var(--sans);font-size:calc(12px*var(--fs));color:var(--muted);
+  font-variant-numeric:tabular-nums;flex:0 0 auto;min-width:18px;font-weight:600}
+.crow .tt{font-size:calc(15px*var(--fs));font-weight:500}
+.crow .er{display:block;font-size:calc(12px*var(--fs));color:var(--muted);margin-top:2px;font-weight:400}
+.crow[aria-current="true"]{background:var(--g-jade);color:#fff}
+.crow[aria-current="true"] .num,.crow[aria-current="true"] .er{color:var(--gold)}
+.backlink{display:block;width:100%;background:none;border:1px solid var(--rule);border-radius:9px;
+  padding:10px 12px;margin-bottom:16px;cursor:pointer;font-family:var(--sans);
+  font-size:calc(13.5px*var(--fs));color:var(--ink-2);text-align:left;font-weight:600}
+.backlink:hover{border-color:var(--brass)}
 
 main{flex:1 1 auto;min-width:0;padding:24px 22px 76px}
+main.read{max-width:800px}
 
+/* ---------- shared blocks ---------- */
 .note{border:1px solid var(--rule);border-radius:14px;background:var(--paper);
   padding:20px 22px;margin-bottom:24px;box-shadow:var(--shadow);position:relative;overflow:hidden}
 .note::before{content:'';position:absolute;inset:0 0 auto 0;height:5px;background:var(--g-bar)}
@@ -145,12 +169,12 @@ main{flex:1 1 auto;min-width:0;padding:24px 22px 76px}
 .note b{color:var(--jade);font-weight:600}
 .note summary{font-family:var(--sans);font-size:calc(15px*var(--fs));color:var(--brass);
   cursor:pointer;font-weight:600;padding:6px 0;min-height:34px}
-
 .crumb{display:flex;align-items:center;gap:12px;margin:0 0 18px}
 .crumb h2{font-family:var(--sans);font-size:calc(25px*var(--fs));margin:0;font-weight:600;
   letter-spacing:-.01em;text-wrap:balance}
 .crumb .ln{flex:1;height:2px;background:var(--g-accent);opacity:.5;border-radius:2px}
 
+/* ---------- library cards ---------- */
 .card{background:var(--paper);border:1px solid var(--rule);border-radius:14px;
   padding:20px 22px 18px;margin-bottom:14px;box-shadow:var(--shadow);
   position:relative;overflow:hidden}
@@ -179,12 +203,69 @@ main{flex:1 1 auto;min-width:0;padding:24px 22px 76px}
 .dup{font-family:var(--sans);font-size:calc(12.5px*var(--fs));color:var(--muted)}
 .vf{font-family:var(--sans);font-size:calc(13px*var(--fs));color:var(--brass);
   text-decoration:none;font-weight:600;margin-left:auto;border-bottom:1.5px solid}
-
 .more{display:block;width:100%;margin-top:24px;padding:17px;background:var(--g-bar);
   color:var(--bar-fg);border:none;border-radius:12px;font-family:var(--sans);
   font-size:calc(15px*var(--fs));letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
   font-weight:600;min-height:52px}
 .more:hover{filter:brightness(1.18)}
+
+/* ---------- article list ---------- */
+.alist{display:flex;flex-direction:column;gap:18px;max-width:800px}
+.acard{background:var(--paper);border:1px solid var(--rule);border-radius:16px;
+  box-shadow:var(--shadow);overflow:hidden;cursor:pointer;text-align:left;
+  padding:0 0 22px;width:100%;font-family:inherit;color:inherit;border-width:1px}
+.acard:hover{border-color:var(--brass)}
+.acard .band{height:6px;background:var(--g-bar)}
+.acard .inner{padding:20px 24px 0}
+.kicker{font-family:var(--sans);font-size:calc(12px*var(--fs));letter-spacing:.17em;
+  text-transform:uppercase;color:var(--brass);font-weight:700;margin-bottom:10px}
+.acard h3{font-family:var(--sans);font-size:calc(30px*var(--fs));margin:0 0 10px;font-weight:700;
+  letter-spacing:-.02em;line-height:1.16;text-wrap:balance}
+.acard .dek{font-size:calc(17.5px*var(--fs));color:var(--ink-2);margin:0 0 15px;line-height:1.6}
+.acard .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{font-family:var(--sans);font-size:calc(12.5px*var(--fs));background:var(--chip);
+  color:var(--chip-fg);padding:5px 12px;border-radius:7px;font-weight:600}
+.pill.g{background:var(--gs-bg);color:var(--gs-fg)}
+
+/* ---------- article reader ---------- */
+.srcnote{margin:16px 0 26px;padding:14px 17px;border-left:3px solid var(--brass);
+  background:var(--g-wash);border-radius:0 8px 8px 0;font-size:calc(14.5px*var(--fs));
+  color:var(--ink-2);line-height:1.62}
+.chap .head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px}
+.chap .n{font-family:var(--sans);font-size:calc(13px*var(--fs));font-weight:700;
+  color:#fff;background:var(--g-jade);border-radius:7px;padding:4px 11px;flex:0 0 auto}
+.chap h2{font-family:var(--sans);font-size:calc(30px*var(--fs));margin:0;font-weight:700;
+  letter-spacing:-.02em;line-height:1.18;text-wrap:balance}
+.chap .era{font-family:var(--sans);font-size:calc(13.5px*var(--fs));color:var(--muted);
+  font-weight:500;letter-spacing:.04em;margin:0 0 20px}
+.chap .rule{height:2px;background:var(--g-accent);opacity:.5;border-radius:2px;margin:0 0 22px}
+.sec{margin-bottom:34px}
+.sec h3{font-family:var(--sans);font-size:calc(22px*var(--fs));margin:0 0 14px;font-weight:600;
+  letter-spacing:-.01em;line-height:1.3;text-wrap:balance}
+.sec p{font-size:calc(19px*var(--fs));line-height:1.8;margin:0 0 17px;color:var(--ink)}
+.sec p em{font-style:italic;color:var(--ink-2)}
+.hadith{background:var(--g-wash),var(--paper);border:1px solid var(--rule);
+  border-radius:14px;padding:20px 22px 17px;margin:22px 0;position:relative;overflow:hidden}
+.hadith::before{content:'';position:absolute;inset:0 auto 0 0;width:5px;background:var(--g-jade)}
+.hadith .label{display:flex;align-items:center;gap:8px;font-family:var(--sans);
+  font-size:calc(11.5px*var(--fs));letter-spacing:.14em;text-transform:uppercase;
+  color:var(--jade);font-weight:700;margin-bottom:11px}
+.hadith .q{font-size:calc(18px*var(--fs));line-height:1.76;color:var(--ink);font-style:italic}
+.hadith .cite{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:15px;
+  padding-top:13px;border-top:1px solid var(--rule)}
+.hadith .ref{font-family:var(--sans);font-size:calc(13.5px*var(--fs));font-weight:600;color:var(--ink-2)}
+.hadith .bk{font-family:var(--sans);font-size:calc(12.5px*var(--fs));color:var(--muted)}
+.nav{display:flex;gap:12px;flex-wrap:wrap;margin-top:40px;padding-top:26px;border-top:1px solid var(--rule)}
+.nav button{flex:1 1 200px;min-height:60px;background:var(--paper);border:1px solid var(--rule);
+  border-radius:12px;padding:13px 17px;cursor:pointer;text-align:left;font-family:var(--sans);
+  color:var(--ink);box-shadow:var(--shadow)}
+.nav button:hover{border-color:var(--brass)}
+.nav button[disabled]{opacity:.4;cursor:default}
+.nav .dir{display:block;font-size:calc(11.5px*var(--fs));letter-spacing:.13em;
+  text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:3px}
+.nav .lb{display:block;font-size:calc(16px*var(--fs));font-weight:600}
+.nav .next{text-align:right}
+
 .none,.load{padding:70px 12px;text-align:center;color:var(--muted);
   font-family:var(--sans);font-size:calc(16px*var(--fs))}
 :focus-visible{outline:3px solid var(--gold);outline-offset:2px}
@@ -192,32 +273,36 @@ main{flex:1 1 auto;min-width:0;padding:24px 22px 76px}
 @media (max-width:920px){
   .rail{position:fixed;top:calc(env(safe-area-inset-top,0px) + 76px);left:0;bottom:0;width:296px;
     background:var(--g-page),var(--ground);z-index:35;transform:translateX(-102%);
-    transition:transform .2s ease;box-shadow:8px 0 26px rgba(0,0,0,.24);
-    border-right:1px solid var(--rule)}
+    transition:transform .2s ease;box-shadow:8px 0 26px rgba(0,0,0,.24);border-right:1px solid var(--rule)}
   .rail[data-open="1"]{transform:translateX(0)}
   .railbtn{display:block}
   .brand .sub{display:none}
   main{padding:18px 16px 64px}
   .card{padding:17px 17px 15px}
   .size{display:none}
+  .acard .inner{padding-left:18px;padding-right:18px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
 <div class="bar"><div class="row">
-  <button class="railbtn" id="railbtn" aria-label="Show topics">☰ Topics</button>
+  <button class="railbtn" id="railbtn" aria-label="Show sidebar">☰</button>
   <div class="brand">
     <span class="star"></span>
     <div>
       <h1>Hadith Library</h1>
-      <div class="sub">8 COLLECTIONS · GRADED · BY TOPIC</div>
+      <div class="sub">BROWSE THE SOURCES · READ THE STORY</div>
     </div>
+  </div>
+  <div class="modes" id="modes" role="group" aria-label="View">
+    <button data-m="lib" aria-pressed="true">Browse</button><button data-m="art" aria-pressed="false">Articles</button>
   </div>
   <input id="q" type="search" placeholder="Search narrations…" aria-label="Search narrations">
   <select id="col" aria-label="Collection"></select>
   <div class="seg" id="seg" role="group" aria-label="Authenticity grade">
     <button data-g="ALL" aria-pressed="true">All grades</button><button data-g="SH" aria-pressed="false">Ṣaḥīḥ</button><button data-g="SHH" aria-pressed="false">+ Ḥasan</button><button data-g="WK" aria-pressed="false">Weak</button>
   </div>
+  <span class="spacer"></span>
   <div class="size" role="group" aria-label="Text size">
     <span>TEXT</span>
     <button id="fsdn" aria-label="Smaller text">A</button>
@@ -227,25 +312,12 @@ main{flex:1 1 auto;min-width:0;padding:24px 22px 76px}
 </div></div>
 
 <div class="wrap">
-  <nav class="rail" id="rail" data-open="0" aria-label="Topics"></nav>
-  <main>
-    <div class="note">
-      <div class="hd"><span class="star"></span><strong>What this is</strong></div>
-      <p><b id="n">20,603</b> distinct narrations from eight collections, filtered to <b>marfūʿ</b> reports — what the Prophet ﷺ said, did, ordered, or approved. Companion opinions and compiler chapter commentary are screened out, near-identical repetitions through different chains are merged and recorded rather than deleted, and the whole corpus is arranged across <b id="nt">67</b> practical topics instead of the compilers' original chapters.</p>
-      <details>
-        <summary>Read the limits before relying on any of it</summary>
-        <p style="margin-top:10px">Only <b>Ṣaḥīḥ al-Bukhārī</b> and <b>Ṣaḥīḥ Muslim</b> are sound throughout — that is what <i>Ṣaḥīḥ</i> in their titles claims. The four <i>Sunan</i> deliberately include weak material, so each narration carries a grade; <b>al-Muwaṭṭaʾ</b> and the partial <b>Musnad Aḥmad</b> have no grading source and show as ungraded, which means unverified, not authentic.</p>
-        <p>Grades come from the LK Ḥadīth Corpus (Leeds / King Saud University) and are al-Albānī's; other scholars grade differently. They were joined to each narration by matching wording, because the two sources number ḥadīth incompatibly — that join succeeded for over 99% in every collection, and it self-checks, since Bukhārī and Muslim come back essentially all ṣaḥīḥ.</p>
-        <p>Topic labels are assigned by keyword, so a narration can sit under a topic it only touches in passing. Browse with them; don't cite them. Reference numbers follow the source dataset and differ from sunnah.com's, so each card carries a <b>verify</b> link that searches by wording instead. For anything you intend to act on, read the Arabic and ask someone trained in the sciences of ḥadīth.</p>
-      </details>
-    </div>
-    <div class="crumb"><span class="star"></span><h2 id="crumb">All narrations</h2><span class="ln"></span></div>
-    <div id="out"><div class="load">Loading 20,603 narrations…</div></div>
-    <button class="more" id="more" hidden>Load more</button>
-  </main>
+  <nav class="rail" id="rail" data-open="0" aria-label="Sidebar"></nav>
+  <main id="main"><div class="load">Loading…</div></main>
 </div>
 
 <script>
+/* ---------- constants ---------- */
 const NAMES={bukhari:'Ṣaḥīḥ al-Bukhārī',muslim:'Ṣaḥīḥ Muslim',abudawud:'Sunan Abī Dāwūd',
  tirmidhi:'Jāmiʿ at-Tirmidhī',nasai:'Sunan an-Nasāʾī',ibnmajah:'Sunan Ibn Mājah',
  malik:'al-Muwaṭṭaʾ',ahmed:'Musnad Aḥmad (partial)'};
@@ -260,10 +332,17 @@ const GROUPS=[
  ["Life, Body & World",["Food & Drink","Medicine & Healing","Trials & Illness","Dreams & Visions","Animals","Travel & Migration","Time, Days & Nights"]],
  ["Prophets & History",["Prophets & Past Peoples","The Prophet's Life & Person","Other Narrations"]],
 ];
-const PAGE=25;
-const STEPS=[0.92,1,1.12,1.26,1.42];
-let D=[],COUNT={},topic=null,query='',source='A',grade='ALL',shown=0,matches=[],fsi=1;
+const PAGE=25, STEPS=[0.92,1,1.12,1.26,1.42];
 
+/* ---------- state ---------- */
+let mode='lib', fsi=1;
+let D=null, dataErr=null, COUNT={}, topic=null, query='', source='A', grade='ALL',
+    shown=0, matches=[];
+let MAN=null, ART=null, ai=null, ci=0;   // manifest, open article, its index, chapter
+
+/* ---------- helpers ---------- */
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function em(s){return esc(s).replace(/\*([^*]+)\*/g,'<em>$1</em>');}
 function gcls(g){
   if(!g) return 'u';
   if(g.indexOf('Mawdu')===0) return 'm';
@@ -280,34 +359,63 @@ function gradeOK(g){
   if(grade==='WK')  return c==='d'||c==='m';
   return true;
 }
-function pool(){ return D.filter(h=>(source==='A'||h.s===source)&&gradeOK(h.g)); }
+function pool(){ return D?D.filter(h=>(source==='A'||h.s===source)&&gradeOK(h.g)):[]; }
 function recount(){ COUNT={}; pool().forEach(h=>h.t.forEach(t=>COUNT[t]=(COUNT[t]||0)+1)); }
-function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
 function applyFs(){
   document.documentElement.style.setProperty('--fs',String(STEPS[fsi]));
-  document.getElementById('fsdn').disabled = fsi===0;
-  document.getElementById('fsup').disabled = fsi===STEPS.length-1;
+  document.getElementById('fsdn').disabled=fsi===0;
+  document.getElementById('fsup').disabled=fsi===STEPS.length-1;
+}
+// Library-only controls are irrelevant while reading, so hide rather than disable.
+function syncChrome(){
+  const lib=mode==='lib';
+  ['q','col','seg','tally'].forEach(id=>{document.getElementById(id).hidden=!lib;});
+  document.getElementById('main').className=lib?'':'read';
+  document.querySelectorAll('#modes button').forEach(b=>
+    b.setAttribute('aria-pressed',String(b.dataset.m===mode)));
 }
 
+/* ---------- rail ---------- */
 function buildRail(){
   const rail=document.getElementById('rail');
-  let h=`<button class="trow" data-t="__all" aria-pressed="${topic?'false':'true'}">All narrations <span class="c">${pool().length.toLocaleString()}</span></button>`;
-  const placed=new Set();
-  GROUPS.forEach(([g,ts])=>{
-    const live=ts.filter(t=>COUNT[t]); ts.forEach(t=>placed.add(t));
-    if(!live.length) return;
-    h+=`<h2>${esc(g)}</h2>`;
-    live.forEach(t=>{h+=`<button class="trow" data-t="${esc(t)}" aria-pressed="${topic===t?'true':'false'}">${esc(t)} <span class="c">${COUNT[t]}</span></button>`;});
-  });
-  const rest=Object.keys(COUNT).filter(t=>!placed.has(t)).sort();
-  if(rest.length){
-    h+=`<h2>Further topics</h2>`;
-    rest.forEach(t=>{h+=`<button class="trow" data-t="${esc(t)}" aria-pressed="${topic===t?'true':'false'}">${esc(t)} <span class="c">${COUNT[t]}</span></button>`;});
+  if(mode==='lib'){
+    if(!D){ rail.innerHTML='<p class="eyebrow">Topics</p><p class="load" style="padding:20px 11px">Loading…</p>'; return; }
+    let h=`<button class="trow" data-t="__all" aria-pressed="${topic?'false':'true'}">All narrations <span class="c">${pool().length.toLocaleString()}</span></button>`;
+    const placed=new Set();
+    GROUPS.forEach(([g,ts])=>{
+      const live=ts.filter(t=>COUNT[t]); ts.forEach(t=>placed.add(t));
+      if(!live.length) return;
+      h+=`<h2>${esc(g)}</h2>`;
+      live.forEach(t=>{h+=`<button class="trow" data-t="${esc(t)}" aria-pressed="${topic===t?'true':'false'}">${esc(t)} <span class="c">${COUNT[t]}</span></button>`;});
+    });
+    const rest=Object.keys(COUNT).filter(t=>!placed.has(t)).sort();
+    if(rest.length){
+      h+=`<h2>Further topics</h2>`;
+      rest.forEach(t=>{h+=`<button class="trow" data-t="${esc(t)}" aria-pressed="${topic===t?'true':'false'}">${esc(t)} <span class="c">${COUNT[t]}</span></button>`;});
+    }
+    rail.innerHTML=h;
+    return;
   }
-  rail.innerHTML=h;
+  // articles
+  if(!ART){
+    rail.innerHTML='<p class="eyebrow">Series</p>'+
+      (MAN?MAN.articles.map((a,i)=>
+        `<button class="crow" data-a="${i}"><span class="num">${i+1}</span>
+          <span><span class="tt">${esc(a.title)}</span>
+          <span class="er">${a.chapters} chapters</span></span></button>`).join('')
+        :'<p class="load" style="padding:20px 11px">Loading…</p>');
+    return;
+  }
+  rail.innerHTML='<button class="backlink" id="allart">← All series</button>'+
+    '<p class="eyebrow">'+esc(ART.kicker||'Chapters')+'</p>'+
+    ART.chapters.map((c,i)=>
+      `<button class="crow" data-c="${i}" aria-current="${i===ci}">
+         <span class="num">${c.n}</span>
+         <span><span class="tt">${esc(c.title)}</span><span class="er">${esc(c.era)}</span></span>
+       </button>`).join('');
 }
 
+/* ---------- library view ---------- */
 function recompute(){
   const ql=query.trim().toLowerCase();
   matches=pool().filter(h=>{
@@ -316,15 +424,33 @@ function recompute(){
     return h.x.toLowerCase().includes(ql)||h.nr.toLowerCase().includes(ql)||
            h.b.toLowerCase().includes(ql)||h.t.some(t=>t.toLowerCase().includes(ql));
   });
-  document.getElementById('crumb').textContent=topic||'All narrations';
   document.getElementById('tally').textContent=
     matches.length.toLocaleString()+(matches.length===1?' narration':' narrations');
-  document.getElementById('out').innerHTML='';
-  shown=0; page();
+  renderLib();
 }
-
+function renderLib(){
+  const m=document.getElementById('main');
+  if(dataErr){ m.innerHTML=dataErr; return; }
+  if(!D){ m.innerHTML='<div class="load">Loading 20,603 narrations…</div>'; return; }
+  m.innerHTML=
+    `<div class="note">
+      <div class="hd"><span class="star"></span><strong>What this is</strong></div>
+      <p><b>${D.length.toLocaleString()}</b> distinct narrations from eight collections, filtered to <b>marfūʿ</b> reports — what the Prophet ﷺ said, did, ordered, or approved. Companion opinions and compiler chapter commentary are screened out, near-identical repetitions through different chains are merged and recorded rather than deleted, and the whole corpus is arranged across <b>${Object.keys(COUNT).length}</b> practical topics instead of the compilers' original chapters.</p>
+      <details>
+        <summary>Read the limits before relying on any of it</summary>
+        <p style="margin-top:10px">Only <b>Ṣaḥīḥ al-Bukhārī</b> and <b>Ṣaḥīḥ Muslim</b> are sound throughout — that is what <i>Ṣaḥīḥ</i> in their titles claims. The four <i>Sunan</i> deliberately include weak material, so each narration carries a grade; <b>al-Muwaṭṭaʾ</b> and the partial <b>Musnad Aḥmad</b> have no grading source and show as ungraded, which means unverified, not authentic.</p>
+        <p>Grades come from the LK Ḥadīth Corpus (Leeds / King Saud University) and are al-Albānī's; other scholars grade differently. They were joined to each narration by matching wording, because the two sources number ḥadīth incompatibly — that join succeeded for over 99% in every collection, and it self-checks, since Bukhārī and Muslim come back essentially all ṣaḥīḥ.</p>
+        <p>Topic labels are assigned by keyword, so a narration can sit under a topic it only touches in passing. Browse with them; don't cite them. Reference numbers follow the source dataset and differ from sunnah.com's, so each card carries a <b>verify</b> link that searches by wording instead. For anything you intend to act on, read the Arabic and ask someone trained in the sciences of ḥadīth.</p>
+      </details>
+    </div>
+    <div class="crumb"><span class="star"></span><h2>${esc(topic||'All narrations')}</h2><span class="ln"></span></div>
+    <div id="out"></div>
+    <button class="more" id="more" hidden>Load more</button>`;
+  shown=0; page();
+  document.getElementById('more').addEventListener('click',page);
+}
 function page(){
-  const out=document.getElementById('out');
+  const out=document.getElementById('out'); if(!out) return;
   if(!matches.length){
     out.innerHTML='<div class="none">No narrations match. Try another word, or pick a different topic or grade.</div>';
     document.getElementById('more').hidden=true; return;
@@ -350,25 +476,125 @@ function page(){
   }).join('');
   while(frag.firstChild) out.appendChild(frag.firstChild);
   shown+=slice.length;
-  const m=document.getElementById('more');
-  m.hidden=shown>=matches.length;
-  m.textContent=`Load more · ${(matches.length-shown).toLocaleString()} remaining`;
+  const mb=document.getElementById('more');
+  mb.hidden=shown>=matches.length;
+  mb.textContent=`Load more · ${(matches.length-shown).toLocaleString()} remaining`;
 }
 
-function setTopic(t){
-  topic=t; document.getElementById('rail').dataset.open='0';
-  buildRail(); recompute(); window.scrollTo({top:0});
+/* ---------- articles view ---------- */
+function renderArtList(){
+  const m=document.getElementById('main');
+  if(!MAN){ m.innerHTML='<div class="load">Loading the series…</div>'; return; }
+  m.innerHTML='<div class="crumb"><span class="star"></span><h2>Articles</h2><span class="ln"></span></div>'+
+   '<div class="alist">'+MAN.articles.map((a,i)=>
+    `<button class="acard" data-a="${i}">
+       <div class="band"></div>
+       <div class="inner">
+         <p class="kicker">${esc(a.kicker)}</p>
+         <h3>${esc(a.title)}</h3>
+         <p class="dek">${esc(a.summary||a.subtitle)}</p>
+         <div class="meta">
+           <span class="pill">${a.chapters} chapters</span>
+           <span class="pill">${esc(a.readingTime)}</span>
+           <span class="pill g">${a.narrations} authentic narrations</span>
+         </div>
+       </div></button>`).join('')+'</div>';
+}
+function hadithHtml(h){
+  const url='https://sunnah.com/search?q='+encodeURIComponent(h.verify||h.text.slice(0,60));
+  return `<figure class="hadith">
+    <figcaption class="label"><span class="star"></span>Narration</figcaption>
+    <div class="q">${esc(h.text)}</div>
+    <div class="cite">
+      <span class="ref">${esc(h.src)} no. ${h.n}</span>
+      <span class="bk">${esc(h.book)}</span>
+      <span class="gr s">${esc(h.grade)}</span>
+      <a class="vf" href="${url}" target="_blank" rel="noopener">verify ↗</a>
+    </div></figure>`;
+}
+function renderArt(){
+  const c=ART.chapters[ci], m=document.getElementById('main');
+  let html='';
+  if(ci===0){
+    html+=`<div class="crumb"><span class="star"></span><h2>${esc(ART.title)}</h2><span class="ln"></span></div>
+      <p class="srcnote">${esc(ART.sourceNote)}</p>`;
+  }
+  html+=`<article class="chap">
+    <div class="head"><span class="n">${c.n}</span><h2>${esc(c.title)}</h2></div>
+    <p class="era">${esc(c.era)}</p><div class="rule"></div>`;
+  c.sections.forEach(s=>{
+    html+=`<section class="sec"><h3>${esc(s.heading)}</h3>`+
+      s.paras.map(p=>`<p>${em(p)}</p>`).join('')+
+      (s.hadith||[]).map(hadithHtml).join('')+'</section>';
+  });
+  html+='</article>';
+  const prev=ART.chapters[ci-1], next=ART.chapters[ci+1];
+  html+=`<nav class="nav">
+    <button id="prev" ${prev?'':'disabled'}><span class="dir">Previous</span>
+      <span class="lb">${prev?esc(prev.title):'Start of series'}</span></button>
+    <button id="next" class="next" ${next?'':'disabled'}><span class="dir">Next</span>
+      <span class="lb">${next?esc(next.title):'End of series'}</span></button></nav>`;
+  m.innerHTML=html;
+  if(prev) document.getElementById('prev').addEventListener('click',()=>goChap(ci-1));
+  if(next) document.getElementById('next').addEventListener('click',()=>goChap(ci+1));
+  document.querySelectorAll('.crow').forEach(b=>
+    b.setAttribute('aria-current',String(+b.dataset.c===ci)));
+}
+function goChap(i){
+  ci=i; document.getElementById('rail').dataset.open='0';
+  renderArt(); window.scrollTo({top:0});
+}
+function openArticle(i){
+  ai=i;
+  const entry=MAN.articles[i];
+  document.getElementById('main').innerHTML='<div class="load">Opening…</div>';
+  fetch('articles/'+entry.file).then(r=>{
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    return r.json();
+  }).then(d=>{ ART=d; ci=0; buildRail(); renderArt(); window.scrollTo({top:0}); })
+   .catch(e=>{document.getElementById('main').innerHTML=
+     '<div class="none">That article could not be loaded ('+esc(e.message)+').</div>';});
+}
+function closeArticle(){
+  ART=null; ai=null; buildRail(); renderArtList(); window.scrollTo({top:0});
 }
 
+/* ---------- routing ---------- */
+function render(){
+  syncChrome();
+  if(mode==='lib') renderLib();
+  else if(ART) renderArt();
+  else renderArtList();
+}
+function setMode(m){
+  mode=m; document.getElementById('rail').dataset.open='0';
+  buildRail(); render(); window.scrollTo({top:0});
+}
+
+/* ---------- events ---------- */
+document.getElementById('modes').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return; setMode(b.dataset.m);
+});
 document.getElementById('rail').addEventListener('click',e=>{
-  const b=e.target.closest('.trow'); if(!b) return;
-  setTopic(b.dataset.t==='__all'?null:b.dataset.t);
+  if(e.target.closest('#allart')){ closeArticle(); return; }
+  const t=e.target.closest('.trow');
+  if(t){
+    topic=t.dataset.t==='__all'?null:t.dataset.t;
+    document.getElementById('rail').dataset.open='0';
+    buildRail(); recompute(); window.scrollTo({top:0}); return;
+  }
+  const c=e.target.closest('.crow'); if(!c) return;
+  document.getElementById('rail').dataset.open='0';
+  if(c.dataset.c!==undefined) goChap(+c.dataset.c);
+  else if(c.dataset.a!==undefined) openArticle(+c.dataset.a);
 });
-document.getElementById('out').addEventListener('click',e=>{
+document.getElementById('main').addEventListener('click',e=>{
+  const a=e.target.closest('.acard');
+  if(a){ openArticle(+a.dataset.a); return; }
   const b=e.target.closest('.tg'); if(!b) return;
-  query=''; document.getElementById('q').value=''; setTopic(b.dataset.t);
+  topic=b.dataset.t; query=''; document.getElementById('q').value='';
+  buildRail(); recompute(); window.scrollTo({top:0});
 });
-document.getElementById('more').addEventListener('click',page);
 document.getElementById('col').addEventListener('change',e=>{
   source=e.target.value; recount();
   if(topic&&!COUNT[topic]) topic=null;
@@ -382,12 +608,8 @@ document.getElementById('seg').addEventListener('click',e=>{
   if(topic&&!COUNT[topic]) topic=null;
   buildRail(); recompute(); window.scrollTo({top:0});
 });
-document.getElementById('fsup').addEventListener('click',()=>{
-  if(fsi<STEPS.length-1){fsi++;applyFs();}
-});
-document.getElementById('fsdn').addEventListener('click',()=>{
-  if(fsi>0){fsi--;applyFs();}
-});
+document.getElementById('fsup').addEventListener('click',()=>{if(fsi<STEPS.length-1){fsi++;applyFs();}});
+document.getElementById('fsdn').addEventListener('click',()=>{if(fsi>0){fsi--;applyFs();}});
 let timer;
 document.getElementById('q').addEventListener('input',e=>{
   clearTimeout(timer); const v=e.target.value;
@@ -398,32 +620,41 @@ document.getElementById('railbtn').addEventListener('click',()=>{
   r.dataset.open=r.dataset.open==='1'?'0':'1';
 });
 
-applyFs();
+/* ---------- boot ----------
+   Two fetches in parallel. The manifest is ~1 KB and the article ~40 KB, against
+   13.7 MB of narrations, so Articles is usable long before the library finishes
+   downloading — hence no await between them. */
+applyFs(); syncChrome();
+
+function loadFailure(err){
+  const local=location.protocol==='file:';
+  return '<div class="none">'+(local
+    ? 'Browsers block data files when a page is opened straight from disk, so this '+
+      'cannot load that way.<br><br>Serve the folder instead — run '+
+      '<code>python3 -m http.server 8000</code> in the repository root, then open '+
+      '<code>http://localhost:8000/app/</code>.<br><br>For a single file that opens '+
+      'with no server, run <code>python3 scripts/build_app_data.py --standalone</code>.'
+    : 'The data could not be loaded ('+esc(err.message)+'). Reload the page to try again.')+
+    '</div>';
+}
+
+fetch('articles/manifest.json').then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r.status)))
+  .then(d=>{ MAN=d; if(mode==='art') { buildRail(); render(); } })
+  .catch(()=>{ MAN={articles:[]}; if(mode==='art'){ buildRail(); render(); } });
+
 fetch('hadith.json').then(r=>{
   if(!r.ok) throw new Error('HTTP '+r.status);
   return r.json();
 }).then(data=>{
   D=data;
-  document.getElementById('n').textContent=D.length.toLocaleString();
   const cnt={}; D.forEach(h=>cnt[h.s]=(cnt[h.s]||0)+1);
   document.getElementById('col').innerHTML=
     `<option value="A">All collections (${D.length.toLocaleString()})</option>`+
     ORDER.map(k=>`<option value="${k}">${NAMES[k]} (${(cnt[k]||0).toLocaleString()})</option>`).join('');
-  recount();
-  document.getElementById('nt').textContent=Object.keys(COUNT).length;
-  buildRail(); recompute();
+  recount(); buildRail();
+  if(mode==='lib') recompute();
 }).catch(err=>{
-  const local = location.protocol === 'file:';
-  document.getElementById('out').innerHTML =
-    '<div class="none">' +
-    (local
-      ? 'Browsers block data files when a page is opened straight from disk, so ' +
-        'the narrations cannot load this way.<br><br>Serve the folder instead — run ' +
-        '<code>python3 -m http.server 8000</code> in the repository root, then open ' +
-        '<code>http://localhost:8000/app/</code>.<br><br>For a single file that opens ' +
-        'with no server, run <code>python3 scripts/build_app_data.py --standalone</code>.'
-      : 'The narration data could not be loaded (' + esc(err.message) +
-        '). Reload the page to try again.') +
-    '</div>';
+  dataErr=loadFailure(err);
+  if(mode==='lib') renderLib();
 });
 </script>

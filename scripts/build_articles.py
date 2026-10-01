@@ -28,7 +28,8 @@ import argparse, glob, json, os, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, 'app', 'hadith.json')
-ARTICLES = os.path.join(ROOT, 'articles')
+ARTICLES = os.path.join(ROOT, 'articles')          # authored *.src.json live here
+OUT = os.path.join(ROOT, 'app', 'articles')        # built output the app fetches
 
 NAMES = {
     'bukhari': 'Sahih al-Bukhari', 'muslim': 'Sahih Muslim',
@@ -105,16 +106,29 @@ def build(path, idx, check_only):
         print(f'  {name}: {len(errors)} PROBLEM(S)')
         for e in errors:
             print(f'    ✗ {e}')
-        return False, count
+        return False, count, None
 
-    if not check_only:
-        json.dump(doc, open(os.path.join(ARTICLES, name), 'w', encoding='utf-8'),
-                  ensure_ascii=False, indent=1)
     chapters = len(doc.get('chapters', []))
     sections = sum(len(c.get('sections', [])) for c in doc.get('chapters', []))
+    if not check_only:
+        os.makedirs(OUT, exist_ok=True)
+        json.dump(doc, open(os.path.join(OUT, name), 'w', encoding='utf-8'),
+                  ensure_ascii=False, indent=1)
     print(f'  {name}: {chapters} chapters, {sections} sections, '
           f'{count} narrations — all verified authentic')
-    return True, count
+
+    entry = {
+        'file': name,
+        'id': doc.get('id', name[:-5]),
+        'title': doc.get('title', ''),
+        'subtitle': doc.get('subtitle', ''),
+        'kicker': doc.get('kicker', ''),
+        'summary': doc.get('summary', ''),
+        'readingTime': doc.get('readingTime', ''),
+        'chapters': chapters,
+        'narrations': count,
+    }
+    return True, count, entry
 
 
 def main():
@@ -129,16 +143,28 @@ def main():
     if not srcs:
         sys.exit(f'no *.src.json found in {ARTICLES}')
 
-    allok, total = True, 0
+    allok, total, manifest = True, 0, []
     for s in srcs:
-        ok, n = build(s, idx, a.check)
+        ok, n, entry = build(s, idx, a.check)
         allok &= ok
         total += n
+        if entry:
+            manifest.append(entry)
+
+    if not allok:
+        sys.exit('\nBUILD FAILED — fix the references above. No article quotes a '
+                 'narration this script could not verify.')
+
+    # The app reads this manifest to list the series; adding an article is
+    # dropping a .src.json here and rebuilding, with no app code to touch.
+    if not a.check:
+        os.makedirs(OUT, exist_ok=True)
+        json.dump({'articles': manifest},
+                  open(os.path.join(OUT, 'manifest.json'), 'w', encoding='utf-8'),
+                  ensure_ascii=False, indent=1)
+        print(f'  manifest.json: {len(manifest)} article(s)')
 
     print(f'\n{total} narrations resolved across {len(srcs)} article(s)')
-    if not allok:
-        sys.exit('BUILD FAILED — fix the references above. No article quotes a '
-                 'narration this script could not verify.')
 
 
 if __name__ == '__main__':

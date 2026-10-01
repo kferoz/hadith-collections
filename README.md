@@ -90,12 +90,14 @@ Fifteen collections beyond the Nine Books, extracted from
 app/index.html                The app — browse narrations, or read the articles
 app/hadith.json               Its data, built from data/english-graded/
 app/articles/                 Built articles + manifest the app fetches
+app/narrators.json            Narrator index, chronological, built from the data
 articles/*.src.json           Article sources (hadith by reference, never by text)
 data/english-graded/          Tier 1, CSV + JSON
 data/arabic-ungraded/         Tier 2a, CSV + JSON
 data/openiti/                 Tier 2b, CSV
 scripts/build_app_data.py     Rebuild app/hadith.json from the committed data
 scripts/build_articles.py     Resolve article references into published articles
+scripts/build_narrators.py    Build the narrator index (needs an external bio CSV)
 scripts/openiti_hadith.py     Extract any OpenITI collection (pure stdlib)
 scripts/dorar_fetch.py        Attach Dorar.net grades (run off a restricted network)
 docs/ARTICLE_GUIDELINES.md    Rules every article follows — read before writing one
@@ -122,7 +124,29 @@ python3 scripts/build_app_data.py --standalone   # writes app/hadith_library_sta
 
 The app reads 20,603 narrations, filterable by topic, collection and grade, with a
 text-size control for comfortable reading at any age. The **Browse / Articles**
-switch in the header moves between the narration index and the narrative series.
+switch in the header moves between the narration index, the narrators who
+transmitted it, and the narrative series.
+
+### Narrators
+
+**Browse → Narrators** lists the 584 people named as narrators of the hadith
+here, ordered by death year, and selecting one filters the library to their
+narrations.
+
+Counts, collections and topics come from this repository's own graded dataset
+and are exact. Death years, generation and Arabic names come from an external
+community dataset matched by name, which is a finding aid rather than an
+authority: a name is not a unique identifier in *rijāl* — "ʿAbdullāh bin ʿUmar"
+names six different people in that source — so a date is shown only where
+exactly one person fits the name and the year agrees with their assigned
+generation. That leaves 88 of 584 dated; the rest show no date rather than a
+guessed one.
+
+Rebuild with:
+
+```bash
+python3 scripts/build_narrators.py --rawis /path/to/kaggle_rawis.csv --report
+```
 
 ### Articles
 

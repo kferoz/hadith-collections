@@ -209,6 +209,43 @@ main.read{max-width:800px}
   font-weight:600;min-height:52px}
 .more:hover{filter:brightness(1.18)}
 
+/* ---------- narrators ---------- */
+.era-band{display:flex;align-items:baseline;gap:12px;margin:30px 0 14px}
+.era-band:first-of-type{margin-top:4px}
+.era-band h3{font-family:var(--sans);font-size:calc(19px*var(--fs));margin:0;font-weight:700;
+  letter-spacing:-.01em}
+.era-band .yr{font-family:var(--sans);font-size:calc(13px*var(--fs));color:var(--muted);
+  font-weight:600;font-variant-numeric:tabular-nums}
+.era-band .ln{flex:1;height:2px;background:var(--g-accent);opacity:.42;border-radius:2px}
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:13px}
+.ncard{background:var(--paper);border:1px solid var(--rule);border-radius:13px;
+  padding:16px 18px 14px;box-shadow:var(--shadow);cursor:pointer;text-align:left;
+  font-family:inherit;color:inherit;position:relative;overflow:hidden;width:100%}
+.ncard:hover{border-color:var(--brass)}
+.ncard::before{content:'';position:absolute;inset:0 auto 0 0;width:4px;background:var(--g-jade)}
+.ncard.undated::before{background:linear-gradient(180deg,#9aa1b2,#6a7287)}
+.ncard h4{font-family:var(--sans);font-size:calc(17.5px*var(--fs));margin:0 0 4px;
+  font-weight:600;line-height:1.3}
+.ncard .ar{font-size:calc(15px*var(--fs));color:var(--muted);margin:0 0 9px;direction:rtl;
+  text-align:left}
+.ncard .nmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:9px}
+.ncard .nb{font-family:var(--sans);font-size:calc(12px*var(--fs));padding:3px 9px;
+  border-radius:6px;font-weight:600;background:var(--chip);color:var(--chip-fg)}
+.ncard .nb.d{background:var(--gs-bg);color:var(--gs-fg)}
+.ncard .nb.q{background:var(--gu-bg);color:var(--gu-fg)}
+.ncard .cnt{font-family:var(--sans);font-size:calc(13.5px*var(--fs));color:var(--ink-2);
+  font-weight:500}
+.ncard .cnt b{font-weight:700;font-variant-numeric:tabular-nums}
+.ncard .tps{font-family:var(--sans);font-size:calc(12.5px*var(--fs));color:var(--muted);
+  margin-top:6px;line-height:1.45}
+.nfilter{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:18px;
+  padding:13px 16px;background:var(--g-wash),var(--paper);border:1px solid var(--rule);
+  border-radius:12px}
+.nfilter .lb{font-family:var(--sans);font-size:calc(14px*var(--fs));font-weight:600}
+.nfilter button{font-family:var(--sans);font-size:calc(13px*var(--fs));background:var(--chip);
+  color:var(--chip-fg);border:none;padding:7px 13px;border-radius:7px;cursor:pointer;font-weight:600}
+.nfilter button:hover{background:var(--g-accent);color:#1d1403}
+
 /* ---------- article list ---------- */
 .alist{display:flex;flex-direction:column;gap:18px;max-width:800px}
 .acard{background:var(--paper);border:1px solid var(--rule);border-radius:16px;
@@ -295,7 +332,7 @@ main.read{max-width:800px}
     </div>
   </div>
   <div class="modes" id="modes" role="group" aria-label="View">
-    <button data-m="lib" aria-pressed="true">Browse</button><button data-m="art" aria-pressed="false">Articles</button>
+    <button data-m="lib" aria-pressed="true">Browse</button><button data-m="nar" aria-pressed="false">Narrators</button><button data-m="art" aria-pressed="false">Articles</button>
   </div>
   <input id="q" type="search" placeholder="Search narrations…" aria-label="Search narrations">
   <select id="col" aria-label="Collection"></select>
@@ -339,6 +376,7 @@ let mode='lib', fsi=1;
 let D=null, dataErr=null, COUNT={}, topic=null, query='', source='A', grade='ALL',
     shown=0, matches=[];
 let MAN=null, ART=null, ai=null, ci=0;   // manifest, open article, its index, chapter
+let NAR=null, NMAP=null, narFilter=null; // narrators, raw-name -> key, active filter
 
 /* ---------- helpers ---------- */
 function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
@@ -359,7 +397,11 @@ function gradeOK(g){
   if(grade==='WK')  return c==='d'||c==='m';
   return true;
 }
-function pool(){ return D?D.filter(h=>(source==='A'||h.s===source)&&gradeOK(h.g)):[]; }
+function pool(){
+  if(!D) return [];
+  return D.filter(h=>(source==='A'||h.s===source)&&gradeOK(h.g)&&
+    (!narFilter||(NMAP&&NMAP.get((h.nr||'').trim())===narFilter)));
+}
 function recount(){ COUNT={}; pool().forEach(h=>h.t.forEach(t=>COUNT[t]=(COUNT[t]||0)+1)); }
 function applyFs(){
   document.documentElement.style.setProperty('--fs',String(STEPS[fsi]));
@@ -370,7 +412,7 @@ function applyFs(){
 function syncChrome(){
   const lib=mode==='lib';
   ['q','col','seg','tally'].forEach(id=>{document.getElementById(id).hidden=!lib;});
-  document.getElementById('main').className=lib?'':'read';
+  document.getElementById('main').className=(mode==='art')?'read':'';
   document.querySelectorAll('#modes button').forEach(b=>
     b.setAttribute('aria-pressed',String(b.dataset.m===mode)));
 }
@@ -394,6 +436,13 @@ function buildRail(){
       rest.forEach(t=>{h+=`<button class="trow" data-t="${esc(t)}" aria-pressed="${topic===t?'true':'false'}">${esc(t)} <span class="c">${COUNT[t]}</span></button>`;});
     }
     rail.innerHTML=h;
+    return;
+  }
+  if(mode==='nar'){
+    if(!NAR){ rail.innerHTML='<p class="eyebrow">Eras</p><p class="load" style="padding:20px 11px">Loading…</p>'; return; }
+    const bands=eraBands();
+    rail.innerHTML='<p class="eyebrow">Eras</p>'+bands.map((b,i)=>
+      `<button class="trow" data-era="${i}">${esc(b.label)} <span class="c">${b.rows.length}</span></button>`).join('');
     return;
   }
   // articles
@@ -443,6 +492,11 @@ function renderLib(){
         <p>Topic labels are assigned by keyword, so a narration can sit under a topic it only touches in passing. Browse with them; don't cite them. Reference numbers follow the source dataset and differ from sunnah.com's, so each card carries a <b>verify</b> link that searches by wording instead. For anything you intend to act on, read the Arabic and ask someone trained in the sciences of ḥadīth.</p>
       </details>
     </div>
+    ${narFilter?(()=>{const r=(NAR||[]).find(x=>x.key===narFilter);
+      if(!r) return '';
+      const yr=r.death_h!=null?` · d. ${r.death_h} AH`:'';
+      return `<div class="nfilter"><span class="lb">Narrations of ${esc(r.name)}${esc(yr)}</span>
+        <button id="clearnar">Clear</button></div>`;})():''}
     <div class="crumb"><span class="star"></span><h2>${esc(topic||'All narrations')}</h2><span class="ln"></span></div>
     <div id="out"></div>
     <button class="more" id="more" hidden>Load more</button>`;
@@ -559,10 +613,78 @@ function closeArticle(){
   ART=null; ai=null; buildRail(); renderArtList(); window.scrollTo({top:0});
 }
 
+/* ---------- narrators ---------- */
+// Chronological bands. Narrators whose death year the source could not be
+// trusted on fall into a final band rather than being given a guessed date.
+const BANDS=[
+  [0,40,'The first generation','to 40 AH'],
+  [41,70,'The Companions who outlived the conquests','41–70 AH'],
+  [71,110,'The last of the Companions','71–110 AH'],
+  [111,180,'The Successors','111–180 AH'],
+  [181,320,'The generation of the compilers','181–320 AH'],
+];
+function eraBands(){
+  const out=BANDS.map(([lo,hi,label,yr])=>({lo,hi,label,yr,rows:[]}));
+  const undated={label:'Date not established',yr:'—',rows:[]};
+  (NAR||[]).forEach(r=>{
+    if(r.death_h==null){ undated.rows.push(r); return; }
+    const b=out.find(x=>r.death_h>=x.lo&&r.death_h<=x.hi);
+    (b||undated).rows.push(r);
+  });
+  out.forEach(b=>b.rows.sort((a,c)=>a.death_h-c.death_h));
+  undated.rows.sort((a,c)=>c.n-a.n);
+  return out.filter(b=>b.rows.length).concat(undated.rows.length?[undated]:[]);
+}
+function ncard(r){
+  const dated=r.death_h!=null;
+  const yr=dated?`d. ${r.death_h} AH${r.death_g?` / ${r.death_g} CE`:''}`:'Date not established';
+  const cols=Object.entries(r.cols).slice(0,3)
+    .map(([k,v])=>`${NAMES[k]||k} ${v}`).join(' · ');
+  return `<button class="ncard${dated?'':' undated'}" data-k="${esc(r.key)}">
+    <h4>${esc(r.name)}</h4>
+    ${r.ar?`<p class="ar">${esc(r.ar)}</p>`:''}
+    <div class="nmeta">
+      <span class="nb ${dated?'d':'q'}">${esc(yr)}</span>
+      ${r.gen&&r.gen!=='Unplaced'?`<span class="nb">${esc(r.gen)}</span>`:''}
+    </div>
+    <div class="cnt"><b>${r.n.toLocaleString()}</b> narration${r.n===1?'':'s'} here${
+      r.sahih?` · ${r.sahih.toLocaleString()} ṣaḥīḥ`:''}</div>
+    ${cols?`<div class="tps">${esc(cols)}</div>`:''}
+    ${r.topics.length?`<div class="tps">${esc(r.topics.slice(0,3).join(' · '))}</div>`:''}
+  </button>`;
+}
+function renderNar(){
+  const m=document.getElementById('main');
+  if(!NAR){ m.innerHTML='<div class="load">Loading the narrators…</div>'; return; }
+  const bands=eraBands();
+  const dated=NAR.filter(r=>r.death_h!=null).length;
+  m.innerHTML=
+    `<div class="note">
+      <div class="hd"><span class="star"></span><strong>Who transmitted this</strong></div>
+      <p>The <b>${NAR.length.toLocaleString()}</b> people named as narrators of the hadith in this app, ordered by when they died. Each card's <b>counts, collections and topics are derived from this app's own graded dataset</b> — they are exact. Select a narrator to read their narrations.</p>
+      <details>
+        <summary>Why most of them carry no date</summary>
+        <p style="margin-top:10px">Dates, generation and the Arabic name come from an external community narrator dataset, matched by name. <b>A name is not a unique identifier in this material</b> — "ʿAbdullāh bin ʿUmar" names six different people in that source, and the famous Companion is not among them. Matching by name alone produced a Companion dated to 190 AH and Ibn az-Zubayr, who died in 73, dated to 12.</p>
+        <p>So a date is shown only where exactly one person fits the name <i>and</i> the year agrees with the generation assigned to them. That leaves <b>${dated}</b> of ${NAR.length.toLocaleString()} dated. The rest are listed last, by volume, with no date rather than a guessed one. For anything that turns on a narrator's identity, use a proper rijāl reference — this is a finding aid.</p>
+      </details>
+    </div>`+
+    bands.map(b=>`<div class="era-band"><h3>${esc(b.label)}</h3>
+      <span class="yr">${esc(b.yr)}</span><span class="ln"></span></div>
+      <div class="ngrid">${b.rows.map(ncard).join('')}</div>`).join('');
+}
+
+function showNarrator(k){
+  narFilter=k; mode='lib'; topic=null; query='';
+  const qi=document.getElementById('q'); if(qi) qi.value='';
+  document.getElementById('rail').dataset.open='0';
+  recount(); syncChrome(); buildRail(); recompute(); window.scrollTo({top:0});
+}
+
 /* ---------- routing ---------- */
 function render(){
   syncChrome();
   if(mode==='lib') renderLib();
+  else if(mode==='nar') renderNar();
   else if(ART) renderArt();
   else renderArtList();
 }
@@ -577,6 +699,13 @@ document.getElementById('modes').addEventListener('click',e=>{
 });
 document.getElementById('rail').addEventListener('click',e=>{
   if(e.target.closest('#allart')){ closeArticle(); return; }
+  const era=e.target.closest('[data-era]');
+  if(era&&mode==='nar'){
+    document.getElementById('rail').dataset.open='0';
+    const h=document.querySelectorAll('.era-band')[+era.dataset.era];
+    if(h) h.scrollIntoView({behavior:'smooth',block:'start'});
+    return;
+  }
   const t=e.target.closest('.trow');
   if(t){
     topic=t.dataset.t==='__all'?null:t.dataset.t;
@@ -589,6 +718,10 @@ document.getElementById('rail').addEventListener('click',e=>{
   else if(c.dataset.a!==undefined) openArticle(+c.dataset.a);
 });
 document.getElementById('main').addEventListener('click',e=>{
+  const n=e.target.closest('.ncard');
+  if(n){ showNarrator(n.dataset.k); return; }
+  const cl=e.target.closest('#clearnar');
+  if(cl){ narFilter=null; recount(); buildRail(); recompute(); window.scrollTo({top:0}); return; }
   const a=e.target.closest('.acard');
   if(a){ openArticle(+a.dataset.a); return; }
   const b=e.target.closest('.tg'); if(!b) return;
@@ -637,6 +770,15 @@ function loadFailure(err){
     : 'The data could not be loaded ('+esc(err.message)+'). Reload the page to try again.')+
     '</div>';
 }
+
+fetch('narrators.json').then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r.status)))
+  .then(d=>{
+    NAR=d.narrators;
+    NMAP=new Map();
+    NAR.forEach(r=>(r.raw||[]).forEach(v=>NMAP.set(v,r.key)));
+    if(mode==='nar'){ buildRail(); render(); }
+  })
+  .catch(()=>{ NAR=[]; NMAP=new Map(); if(mode==='nar'){ buildRail(); render(); } });
 
 fetch('articles/manifest.json').then(r=>r.ok?r.json():Promise.reject(new Error('HTTP '+r.status)))
   .then(d=>{ MAN=d; if(mode==='art') { buildRail(); render(); } })

@@ -205,6 +205,47 @@ without knowing its grade status.
 
 ---
 
+## Narrators (`app/narrators.json`)
+
+A third mode in the app: the people named as narrators of the hadith here,
+ordered by death year. Built by `scripts/build_narrators.py` from
+`app/hadith.json` plus an external biography source.
+
+**Two kinds of fact, kept apart on purpose.** Counts, collections, topics and
+grade breakdowns are DERIVED from this repository's own dataset — exact and
+reproducible. Death years, generation and the Arabic name come from
+`src/kaggle_rawis.csv` in github.com/R3GENESI5/Itqan, a community dataset
+matched BY NAME, and are a finding aid, not an authority. The UI says so.
+
+**A name is not a unique identifier in rijal, and this is where the bodies are
+buried.** "ʿAbdullāh bin ʿUmar" names six different people in that source and
+the famous Companion is not among them. Naive matching produced a Companion
+dated to 190 AH, Ibn az-Zubayr (d.73) dated to 12, and two narrators dated
+before the Hijra. So `pick_bio` refuses rather than guesses: it needs exactly
+one candidate (or one unambiguous name-prefix), a death year all candidates
+agree on, and a year consistent with the generation that source assigns. That
+leaves ~88 of ~584 dated. **Do not loosen this to raise coverage** — a wrong
+death year corrupts the chronological ordering and looks entirely plausible.
+
+**Clustering bugs found the hard way**, both of which silently mis-attributed
+one Companion's narrations to another:
+- *"Said" is a name as often as a verb.* The tail-stripper turned "Narrated Abu
+  Said Al-Khudri:" into a bare `abu`, and "As-" (the Arabic article) did the
+  same to "Abu As-Samh". Both then merged into the largest `abu*` cluster, so
+  **Abū Saʿīd al-Khudrī's narrations were filed under Abū Hurayra.** Name
+  particles are now protected before tail-stripping, and a name that reduces to
+  a bare particle is discarded.
+- *A kunya is not its bare name.* Suffix merging folded `ayyub` into
+  `abu ayyub` — Ayyūb and Abū Ayyūb are different people, as are Bakr and Abū
+  Bakr. Suffix merges are now allowed only when the short form is relational
+  (`ibn …`, `bint …`).
+
+The build prints a merge count and a refusal breakdown; an audit that every
+cluster member is explained by a prefix or relational-suffix rule should return
+zero exceptions.
+
+---
+
 ## Articles
 
 Narrative long-form built on the dataset. **There is no separate reader** —
